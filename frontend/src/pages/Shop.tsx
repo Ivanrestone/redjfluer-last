@@ -1,8 +1,17 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 function Shop() {
+  const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('All Collections')
+
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    if (categoryParam && ['Bouquets', 'Flower Boxes', 'Plants in Vases'].includes(categoryParam)) {
+      setSelectedCategory(categoryParam)
+    }
+  }, [searchParams])
 
   const products = [
     // Bouquets
