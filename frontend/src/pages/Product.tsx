@@ -1,5 +1,5 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
 
 function Product() {
@@ -16,6 +16,11 @@ function Product() {
   const [animationStyle, setAnimationStyle] = useState({})
   const [cartBounce, setCartBounce] = useState(false)
   const addButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Scroll to top on mount or when product changes
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [id])
 
   const products = [
     // Bouquets

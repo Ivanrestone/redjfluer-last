@@ -74,8 +74,9 @@ function Home() {
             <Link className="font-headline-md text-headline-md tracking-tighter text-primary dark:text-on-primary" to="/">REDJFLUER</Link>
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-8">
-              <Link className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" to="/">Home</Link>
-              <Link className="font-label-caps text-label-caps text-primary dark:text-on-primary border-b border-primary pb-1" to="/shop">Shop</Link>
+               <Link className="font-label-caps text-label-caps text-primary dark:text-on-primary border-b border-primary pb-1" to="/">Home</Link>
+              <Link className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" to="/shop">Shop</Link>
+             
               <a className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" href="#">About</a>
             </div>
             {/* Trailing Icons */}
