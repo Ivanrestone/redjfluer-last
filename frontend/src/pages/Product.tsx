@@ -15,7 +15,6 @@ function Product() {
   const [isAnimating, setIsAnimating] = useState(false)
   const [animationStyle, setAnimationStyle] = useState({})
   const [cartBounce, setCartBounce] = useState(false)
-  const [showToast, setShowToast] = useState(false)
   const addButtonRef = useRef<HTMLButtonElement>(null)
 
   const products = [
@@ -107,33 +106,15 @@ function Product() {
         })
       }, 50)
 
-      // Trigger cart bounce animation (twice)
+      // Trigger cart bounce animation
       setTimeout(() => {
         setCartBounce(true)
-        setTimeout(() => {
-          setCartBounce(false)
-          setTimeout(() => {
-            setCartBounce(true)
-            setTimeout(() => {
-              setCartBounce(false)
-            }, 300)
-          }, 100)
-        }, 300)
       }, 700)
-
-      // Show toast message
-      setTimeout(() => {
-        setShowToast(true)
-      }, 750)
-
-      // Hide toast after 3 seconds
-      setTimeout(() => {
-        setShowToast(false)
-      }, 3750)
 
       // End animation
       setTimeout(() => {
         setIsAnimating(false)
+        setCartBounce(false)
       }, 850)
     }
   }
@@ -173,16 +154,6 @@ function Product() {
         <div style={animationStyle as React.CSSProperties} />
       )}
       
-      {/* Toast notification */}
-      {showToast && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-bounce">
-          <div className="bg-surface-container text-on-surface px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 border border-primary">
-            <span className="material-symbols-outlined text-primary">check_circle</span>
-            <span className="font-label-caps text-label-caps">Added to cart</span>
-          </div>
-        </div>
-      )}
-      
       <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30">
         <div className="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
           <Link className="font-headline-md text-headline-md tracking-tighter text-primary" to="/">REDJFLUER</Link>
@@ -194,16 +165,10 @@ function Product() {
           <div className="flex items-center space-x-6">
             <button><span className="material-symbols-outlined">search</span></button>
             <Link to="/account"><span className="material-symbols-outlined">person</span></Link>
-            <Link to="/cart" className="relative">
+            <button className="hidden sm:block"><span className="material-symbols-outlined">favorite</span></button>
+            <Link to="/cart" className={`relative ${cartBounce ? 'animate-bounce' : ''}`}>
               <span className="material-symbols-outlined">shopping_bag</span>
               <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{getCartCount()}</span>
-              {cartBounce && (
-                <div className="absolute -bottom-10 right-0 animate-bounce">
-                  <div className="bg-surface-container text-on-surface text-[11px] px-3 py-1.5 rounded-lg font-label-caps whitespace-nowrap border border-primary shadow-lg">
-                    Adding to cart
-                  </div>
-                </div>
-              )}
             </Link>
           </div>
         </div>
