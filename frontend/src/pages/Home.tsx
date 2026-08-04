@@ -200,52 +200,37 @@ function Home() {
           <section className="py-section-gap bg-surface-container-low">
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto">
               <div className="text-center mb-16">
-                <span className="font-label-caps text-label-caps text-on-surface-variant tracking-[0.3em] block mb-4 uppercase">Curated Collections</span>
-                <h2 className="font-headline-md text-headline-md">Discover our meticulously designed collections, each tailored for a specific expression of sentiment.</h2>
+                <span className="font-label-caps text-label-caps text-on-surface-variant tracking-[0.3em] block mb-4 uppercase">Curation</span>
+                <h2 className="font-headline-md text-headline-md italic">The Editorial Edit</h2>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Bouquets */}
-                <Link to="/shop?category=Bouquets" className="group cursor-pointer">
-                  <div className="relative overflow-hidden aspect-[4/5] bg-surface-container">
-                    <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]" alt="A lavish luxury bouquet featuring pastel peonies, delicate roses, and soft greenery in a high-end glass vase against a creamy background, soft natural lighting." src="/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                      <h3 className="font-headline-md text-headline-md mb-4">Bouquets</h3>
-                      <div className="flex items-center gap-2 font-label-caps text-label-caps">
-                        <span>EXPLORE</span>
-                        <span className="material-symbols-outlined">arrow_forward</span>
-                      </div>
-                    </div>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
+                {/* Summer Solstice */}
+                <div className="md:col-span-8 group relative overflow-hidden aspect-[16/9] cursor-pointer">
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[1.5s]" style={{ backgroundImage: "url('/Bouquets/c2eb77c637230072d854f88191331dad.jpg')" }}></div>
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-500"></div>
+                  <div className="absolute bottom-10 left-10 text-white">
+                    <h3 className="font-headline-md text-headline-md mb-2">Summer Solstice</h3>
+                    <p className="font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity duration-500 underline underline-offset-8">EXPLORE COLLECTION</p>
                   </div>
-                </Link>
-                {/* Flower Boxes */}
-                <Link to="/shop?category=Flower Boxes" className="group cursor-pointer">
-                  <div className="relative overflow-hidden aspect-[4/5] bg-surface-container">
-                    <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]" alt="A sophisticated velvet hat box filled with perfectly arranged, vibrant red signature roses, set on a polished marble surface with soft shadows." src="/BoxWithFlowers/3c77806568ab868dd4cad5f6738f5d59.jpg" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                      <h3 className="font-headline-md text-headline-md mb-4">Flower Boxes</h3>
-                      <div className="flex items-center gap-2 font-label-caps text-label-caps">
-                        <span>EXPLORE</span>
-                        <span className="material-symbols-outlined">arrow_forward</span>
-                      </div>
-                    </div>
+                </div>
+                {/* The Wedding Edit */}
+                <div className="md:col-span-4 group relative overflow-hidden aspect-[4/5] cursor-pointer">
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[1.5s]" style={{ backgroundImage: "url('/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg')" }}></div>
+                  <div className="absolute inset-0 bg-black/5 group-hover:bg-black/15 transition-colors duration-500"></div>
+                  <div className="absolute bottom-10 left-10 text-white">
+                    <h3 className="font-headline-sm text-headline-sm mb-2">The Wedding Edit</h3>
+                    <p className="font-label-caps text-label-caps opacity-0 group-hover:opacity-100 transition-opacity duration-500 underline underline-offset-8">VIEW MORE</p>
                   </div>
-                </Link>
-                {/* Plants in Vases */}
-                <Link to="/shop?category=Plants in Vases" className="group cursor-pointer">
-                  <div className="relative overflow-hidden aspect-[4/5] bg-surface-container">
-                    <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]" alt="Close up of a single, flawless eternal rose in a minimalist acrylic display case, highlighting the velvety texture of the petals, moody and elegant lighting." src="/VaseWithPlant/671746f94e2a24fa3ec0115c0c4bd841.jpg" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                      <h3 className="font-headline-md text-headline-md mb-4">Plants in Vases</h3>
-                      <div className="flex items-center gap-2 font-label-caps text-label-caps">
-                        <span>EXPLORE</span>
-                        <span className="material-symbols-outlined">arrow_forward</span>
-                      </div>
-                    </div>
+                </div>
+                {/* Classic Roses (Full width variant) */}
+                <div className="md:col-span-12 group relative overflow-hidden aspect-[21/9] cursor-pointer mt-8">
+                  <div className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-[1.5s]" style={{ backgroundImage: "url('/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg')" }}></div>
+                  <div className="absolute inset-0 bg-black/15 group-hover:bg-black/25 transition-colors duration-500"></div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center">
+                    <h3 className="font-display-lg text-display-lg-mobile md:text-headline-md lg:text-display-lg mb-4 italic">Classic Roses</h3>
+                    <p className="font-label-caps text-label-caps border border-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">SHOP TIMELESS</p>
                   </div>
-                </Link>
+                </div>
               </div>
             </div>
           </section>
