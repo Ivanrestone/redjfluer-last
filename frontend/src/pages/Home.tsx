@@ -74,8 +74,8 @@ function Home() {
             <Link className="font-headline-md text-headline-md tracking-tighter text-primary dark:text-on-primary" to="/">REDJFLUER</Link>
             {/* Desktop Links */}
             <div className="hidden md:flex items-center gap-8">
+              <Link className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" to="/">Home</Link>
               <Link className="font-label-caps text-label-caps text-primary dark:text-on-primary border-b border-primary pb-1" to="/shop">Shop</Link>
-              <a className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" href="#">Collections</a>
               <a className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" href="#">About</a>
             </div>
             {/* Trailing Icons */}
@@ -238,9 +238,9 @@ function Home() {
           {/* Best Sellers */}
           <section className="py-section-gap">
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto">
-              <div className="flex items-center justify-between mb-16">
-                <h2 className="font-headline-md text-headline-md">The Best Sellers</h2>
-                <p className="font-body-md text-on-surface-variant max-w-xs text-right hidden md:block">Our most coveted arrangements, favored by our bloom circle for their timeless appeal.</p>
+              <div className="mb-16">
+                <h2 className="font-headline-md text-headline-md mb-4">The Best Sellers</h2>
+                <p className="font-body-md text-on-surface-variant max-w-lg">Our most coveted arrangements, favored by our bloom circle for their timeless appeal.</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
                 {/* Product Card 1 */}
