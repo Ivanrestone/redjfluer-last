@@ -108,7 +108,7 @@ function Shop() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredProducts.map(product => (
-              <div key={product.id} className="group cursor-pointer">
+              <Link key={product.id} to={`/product/${product.id}`} className="group cursor-pointer">
                 <div className="aspect-[1/1.25] mb-6 overflow-hidden bg-surface-container relative">
                   <img 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" 
@@ -124,7 +124,7 @@ function Shop() {
                   <h3 className="font-headline-sm text-headline-sm mb-1">{product.name}</h3>
                   <p className="font-label-caps text-label-caps">{product.price}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
