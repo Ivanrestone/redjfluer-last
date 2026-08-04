@@ -194,10 +194,16 @@ function Product() {
           <div className="flex items-center space-x-6">
             <button><span className="material-symbols-outlined">search</span></button>
             <Link to="/account"><span className="material-symbols-outlined">person</span></Link>
-            <button className="hidden sm:block"><span className="material-symbols-outlined">favorite</span></button>
-            <Link to="/cart" className={`relative ${cartBounce ? 'animate-bounce' : ''}`}>
+            <Link to="/cart" className="relative">
               <span className="material-symbols-outlined">shopping_bag</span>
               <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{getCartCount()}</span>
+              {cartBounce && (
+                <div className="absolute -bottom-10 right-0 animate-bounce">
+                  <div className="bg-surface-container text-on-surface text-[11px] px-3 py-1.5 rounded-lg font-label-caps whitespace-nowrap border border-primary shadow-lg">
+                    Adding to cart
+                  </div>
+                </div>
+              )}
             </Link>
           </div>
         </div>
