@@ -59,7 +59,7 @@ function Checkout() {
     <div className="bg-surface text-on-surface font-body-md">
       <Header />
       <main className="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-desktop">
-        <h1 className="font-headline-md text-headline-md mb-8 border-b border-outline-variant/30 pb-4">Checkout</h1>
+
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
           {/* Left Column: Checkout Details */}

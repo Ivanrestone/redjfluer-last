@@ -211,19 +211,7 @@ function Product() {
               </div>
             </div>
 
-            {/* Delivery Date */}
-            <div className="space-y-4">
-              <h3 className="font-label-caps text-label-caps text-primary">SELECT PREFERRED DELIVERY DATE</h3>
-              <div className="relative group">
-                <input 
-                  className="w-full border-b border-primary bg-transparent py-3 font-body-md outline-none focus:border-secondary transition-colors cursor-pointer appearance-none" 
-                  type="date" 
-                  value={deliveryDate}
-                  onChange={(e) => setDeliveryDate(e.target.value)}
-                />
-                <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none">calendar_today</span>
-              </div>
-            </div>
+
 
             {/* Actions */}
             <div className="flex flex-col gap-4 pt-4">
@@ -271,39 +259,6 @@ function Product() {
           </div>
         </div>
 
-        {/* Reviews Section */}
-        <section className="mt-section-gap py-section-gap border-t border-outline-variant/30">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-xl">
-              <h2 className="font-headline-md text-headline-md text-primary mb-4">The Floral Sentiment</h2>
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex text-secondary">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
-                  ))}
-                </div>
-                <span className="font-label-caps text-label-caps text-on-surface-variant">4.9 BASED ON 124 REVIEWS</span>
-              </div>
-            </div>
-            <button className="border border-primary px-10 py-4 font-label-caps text-label-caps hover:bg-primary hover:text-on-primary transition-all">WRITE A REVIEW</button>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            {reviews.map((review, idx) => (
-              <div key={idx} className="flex flex-col gap-4 p-8 bg-surface-container-low">
-                <div className="flex text-secondary scale-75 -ml-2">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <span key={i} className="material-symbols-outlined" style={{ fontVariationSettings: 'FILL 1' }}>star</span>
-                  ))}
-                </div>
-                <p className="font-body-md text-primary italic">"{review.text}"</p>
-                <div>
-                  <p className="font-label-caps text-label-caps text-primary">{review.name}</p>
-                  <p className="text-[10px] text-on-surface-variant uppercase tracking-widest">Verified Buyer</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* Related Products Section */}
         {relatedProducts.length > 0 && (

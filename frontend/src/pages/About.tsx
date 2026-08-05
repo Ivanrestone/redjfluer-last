@@ -31,23 +31,7 @@ function About() {
       <Header />
       
       {/* Hero Section */}
-      <section className="relative h-screen w-full flex items-center justify-center pt-20">
-        <div 
-          className="absolute inset-0 z-0 parallax-bg"
-          style={{
-            backgroundImage: "url('/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg')",
-            backgroundAttachment: 'fixed',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover'
-          }}
-        ></div>
-        <div className="absolute inset-0 bg-surface/30 mix-blend-multiply z-10"></div>
-        <div className="relative z-20 text-center max-w-4xl px-6 md:px-margin-desktop fade-in-up">
-          <h1 className="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6">Our Story</h1>
-          <p className="font-body-lg text-body-lg text-primary/80 max-w-2xl mx-auto">Artistry in bloom. A dedication to the transient beauty of nature, elevated through deliberate design.</p>
-        </div>
-      </section>
+
 
       {/* Philosophy Section */}
       <section className="py-section-gap px-6 md:px-margin-desktop max-w-container-max mx-auto">

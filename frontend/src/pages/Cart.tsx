@@ -21,7 +21,7 @@ function Cart() {
     <div className="bg-surface text-on-surface font-body-md">
       <Header />
       <main className="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-        <h1 className="font-display-lg text-display-lg mb-12 text-center md:text-left">Your Selection</h1>
+      
         
         {cartItems.length === 0 ? (
           <div className="text-center py-20">
@@ -81,18 +81,7 @@ function Cart() {
                 </div>
               ))}
 
-              {/* Gift Message */}
-              <div className="pt-12 border-t border-outline-variant/30">
-                <label className="font-label-caps text-label-caps block mb-4">GIFT MESSAGE (OPTIONAL)</label>
-                <textarea 
-                  className="w-full bg-transparent border-b border-primary font-body-md py-4 focus:ring-0 focus:border-secondary resize-none transition-all duration-300"
-                  placeholder="Enter your note here..."
-                  rows={4}
-                  value={giftMessage}
-                  onChange={(e) => setGiftMessage(e.target.value)}
-                />
-              </div>
-
+          
               <Link to="/shop" className="inline-flex items-center gap-2 font-label-caps text-label-caps hover:text-secondary transition-colors duration-300 group">
                 <span className="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
                 CONTINUE SHOPPING
@@ -107,23 +96,7 @@ function Cart() {
                   <span className="text-on-surface-variant">Subtotal</span>
                   <span>${subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between font-body-md">
-                  <span className="text-on-surface-variant">Shipping</span>
-                  <span className="text-on-surface-variant italic">Calculated at next step</span>
-                </div>
-                <div className="pt-4">
-                  <label className="font-label-caps text-[10px] block mb-2">PROMO CODE</label>
-                  <div className="flex gap-2">
-                    <input 
-                      className="flex-grow bg-transparent border-b border-outline-variant py-2 font-body-md focus:border-primary transition-colors"
-                      placeholder="FLORETTE10"
-                      type="text"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value)}
-                    />
-                    <button className="font-label-caps text-[10px] text-primary hover:text-secondary transition-colors">APPLY</button>
-                  </div>
-                </div>
+
               </div>
               <div className="flex justify-between items-end mb-10">
                 <span className="font-label-caps text-label-caps">ESTIMATED TOTAL</span>
