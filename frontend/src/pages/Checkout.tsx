@@ -1,13 +1,15 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { useCart } from '../context/CartContext'
+import Header from '../components/Header'
 
 function Checkout() {
   const { cartItems, getCartTotal, clearCart } = useCart()
   const [selectedDate, setSelectedDate] = useState(24)
   const [formData, setFormData] = useState({
     email: '',
-    recipientName: '',
+    recipientFirstName: '',
+    recipientLastName: '',
     deliveryAddress: '',
     city: '',
     state: '',
@@ -37,7 +39,7 @@ function Checkout() {
     const body = encodeURIComponent(
       `Order Details:\n\n` +
       `Email: ${formData.email}\n` +
-      `Recipient Name: ${formData.recipientName}\n` +
+      `Recipient Name: ${formData.recipientFirstName} ${formData.recipientLastName}\n` +
       `Delivery Address: ${formData.deliveryAddress}\n` +
       `City: ${formData.city}\n` +
       `State: ${formData.state}\n` +
@@ -55,59 +57,63 @@ function Checkout() {
 
   return (
     <div className="bg-surface text-on-surface font-body-md">
-      <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30">
-        <div className="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
-          <Link className="font-headline-md text-headline-md tracking-tighter text-primary" to="/">FLORETTE</Link>
-          <nav className="hidden md:flex items-center space-x-12">
-            <Link className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" to="/shop">Shop</Link>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Collections</a>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">About</a>
-          </nav>
-          <div className="flex items-center space-x-6">
-            <button className="hover:opacity-70 transition-opacity duration-300"><span className="material-symbols-outlined">search</span></button>
-            <Link to="/account" className="hover:opacity-70 transition-opacity duration-300"><span className="material-symbols-outlined">person</span></Link>
-            <button className="hover:opacity-70 transition-opacity duration-300 hidden md:block"><span className="material-symbols-outlined">favorite</span></button>
-            <Link to="/cart" className="hover:opacity-70 transition-opacity duration-300 relative">
-              <span className="material-symbols-outlined">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{cartItems.length}</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       <main className="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-desktop">
         <h1 className="font-headline-md text-headline-md mb-8 border-b border-outline-variant/30 pb-4">Checkout</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
           {/* Left Column: Checkout Details */}
-          <div className="lg:col-span-8 space-y-8">
-            {/* Customer & Delivery Information */}
-            <section className="bg-surface-container-low p-6 border border-outline-variant/20">
-              <h2 className="font-label-caps text-label-caps uppercase mb-6">Order Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="lg:col-span-8 space-y-12">
+            {/* Section 1: Customer Information */}
+            <section>
+              <div className="flex justify-between items-center mb-8">
+                <h2 className="font-label-caps text-label-caps uppercase">1. Customer Information</h2>
+                <button className="text-[11px] underline font-label-caps hover:text-secondary-fixed-dim transition-colors">Log In for Faster Checkout</button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Email Address</label>
                   <input 
-                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                     placeholder="email@example.com" 
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                   />
                 </div>
+                <div className="flex items-center gap-3 pt-6">
+                  <input className="w-4 h-4 rounded-none border-primary focus:ring-0" id="newsletter" type="checkbox"/>
+                  <label className="text-body-md text-on-surface-variant" htmlFor="newsletter">Keep me updated on seasonal blooms</label>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 2: Delivery Details */}
+            <section>
+              <h2 className="font-label-caps text-label-caps uppercase mb-8">2. Delivery Details</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
                 <div className="relative">
-                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient Name</label>
+                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient First Name</label>
                   <input 
-                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                     type="text"
-                    value={formData.recipientName}
-                    onChange={(e) => setFormData({...formData, recipientName: e.target.value})}
+                    value={formData.recipientFirstName}
+                    onChange={(e) => setFormData({...formData, recipientFirstName: e.target.value})}
+                  />
+                </div>
+                <div className="relative">
+                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient Last Name</label>
+                  <input 
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
+                    type="text"
+                    value={formData.recipientLastName}
+                    onChange={(e) => setFormData({...formData, recipientLastName: e.target.value})}
                   />
                 </div>
                 <div className="md:col-span-2 relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Delivery Address</label>
                   <input 
-                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                     placeholder="Street, Apt, Floor" 
                     type="text"
                     value={formData.deliveryAddress}
@@ -117,7 +123,7 @@ function Checkout() {
                 <div className="relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">City</label>
                   <input 
-                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
@@ -127,7 +133,7 @@ function Checkout() {
                   <div className="relative">
                     <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">State</label>
                     <input 
-                      className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                      className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                       type="text"
                       value={formData.state}
                       onChange={(e) => setFormData({...formData, state: e.target.value})}
@@ -136,7 +142,7 @@ function Checkout() {
                   <div className="relative">
                     <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Zip Code</label>
                     <input 
-                      className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
+                      className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
                       type="text"
                       value={formData.zipCode}
                       onChange={(e) => setFormData({...formData, zipCode: e.target.value})}
@@ -146,53 +152,58 @@ function Checkout() {
               </div>
             </section>
 
-            {/* Delivery Date Selection */}
-            <section className="bg-surface-container-low p-6 border border-outline-variant/20">
-              <h2 className="font-label-caps text-label-caps uppercase mb-4">Select Delivery Date</h2>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="material-symbols-outlined text-primary text-sm">calendar_today</span>
-                <span className="font-body-md text-sm">Earliest delivery: Tomorrow, Oct 24th</span>
+            {/* Section 3: Delivery Date Selection */}
+            <section>
+              <h2 className="font-label-caps text-label-caps uppercase mb-8">3. Select Delivery Date</h2>
+              <div className="bg-surface-container-low p-8 border border-outline-variant/20">
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="material-symbols-outlined text-primary">calendar_today</span>
+                  <span className="font-body-md">Earliest delivery: Tomorrow, Oct 24th</span>
+                </div>
+                {/* Mock Calendar Interface */}
+                <div className="grid grid-cols-7 gap-2 text-center border-t border-outline-variant/30 pt-6">
+                  <div className="text-[10px] font-label-caps opacity-50">S</div>
+                  <div className="text-[10px] font-label-caps opacity-50">M</div>
+                  <div className="text-[10px] font-label-caps opacity-50">T</div>
+                  <div className="text-[10px] font-label-caps opacity-50">W</div>
+                  <div className="text-[10px] font-label-caps opacity-50">T</div>
+                  <div className="text-[10px] font-label-caps opacity-50">F</div>
+                  <div className="text-[10px] font-label-caps opacity-50">S</div>
+                  {/* Past days */}
+                  <div className="py-3 text-outline text-body-md opacity-20">20</div>
+                  <div className="py-3 text-outline text-body-md opacity-20">21</div>
+                  <div className="py-3 text-outline text-body-md opacity-20">22</div>
+                  {/* Selectable days */}
+                  {[23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2].map(day => (
+                    <div 
+                      key={day}
+                      onClick={() => setSelectedDate(day)}
+                      className={`py-3 text-body-md cursor-pointer transition-colors ${
+                        selectedDate === day 
+                          ? 'bg-primary text-on-primary font-bold' 
+                          : 'hover:bg-primary-fixed'
+                      }`}
+                    >
+                      {day}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="grid grid-cols-7 gap-1 text-center border-t border-outline-variant/30 pt-4">
-                <div className="text-[9px] font-label-caps opacity-50">S</div>
-                <div className="text-[9px] font-label-caps opacity-50">M</div>
-                <div className="text-[9px] font-label-caps opacity-50">T</div>
-                <div className="text-[9px] font-label-caps opacity-50">W</div>
-                <div className="text-[9px] font-label-caps opacity-50">T</div>
-                <div className="text-[9px] font-label-caps opacity-50">F</div>
-                <div className="text-[9px] font-label-caps opacity-50">S</div>
-                {/* Past days */}
-                <div className="py-2 text-outline text-body-md opacity-20 text-sm">20</div>
-                <div className="py-2 text-outline text-body-md opacity-20 text-sm">21</div>
-                <div className="py-2 text-outline text-body-md opacity-20 text-sm">22</div>
-                {/* Selectable days */}
-                {[23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2].map(day => (
-                  <div 
-                    key={day}
-                    onClick={() => setSelectedDate(day)}
-                    className={`py-2 text-body-md cursor-pointer transition-colors text-sm ${
-                      selectedDate === day 
-                        ? 'bg-primary text-on-primary font-bold' 
-                        : 'hover:bg-primary-fixed'
-                    }`}
-                  >
-                    {day}
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 text-[11px] italic text-on-surface-variant">Note: Same-day delivery cut-off is 11:00 AM EST.</p>
+              <p className="mt-4 text-[12px] italic text-on-surface-variant">Note: Same-day delivery cut-off is 11:00 AM EST.</p>
             </section>
 
-            {/* Message/Notes */}
-            <section className="bg-surface-container-low p-6 border border-outline-variant/20">
-              <h2 className="font-label-caps text-label-caps uppercase mb-4">Additional Message (Optional)</h2>
-              <textarea 
-                className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none resize-none" 
-                rows={3}
-                placeholder="Any special requests or notes..."
-                value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-              ></textarea>
+            {/* Section 4: Additional Message */}
+            <section>
+              <h2 className="font-label-caps text-label-caps uppercase mb-8">4. Additional Message (Optional)</h2>
+              <div className="bg-surface-container-low p-8 border border-outline-variant/20">
+                <textarea 
+                  className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none resize-none" 
+                  rows={4}
+                  placeholder="Any special requests or notes..."
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                ></textarea>
+              </div>
             </section>
           </div>
 

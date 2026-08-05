@@ -1,20 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Header from '../components/Header'
 
 function Home() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
   useEffect(() => {
-    // Header scroll effect - transparent at top, solid when scrolling
     const handleScroll = () => {
-      const header = document.getElementById('main-header')
-      if (header) {
-        if (window.scrollY > 50) {
-          header.classList.add('bg-surface/90', 'backdrop-blur-xl', 'border-b', 'border-outline-variant/30', 'shadow-sm', 'py-2')
-          header.classList.remove('py-4')
-        } else {
-          header.classList.remove('bg-surface/90', 'backdrop-blur-xl', 'border-b', 'border-outline-variant/30', 'shadow-sm', 'py-2')
-          header.classList.add('py-4')
-        }
-      }
+      setIsScrolled(window.scrollY > 50)
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -68,35 +61,7 @@ function Home() {
   return (
     <div className="bg-surface text-on-surface font-body-md overflow-x-hidden m-0 p-0 w-full">
         {/* TopNavBar */}
-        <header className="fixed top-0 w-full z-50 transition-all duration-300" id="main-header">
-          <nav className="flex justify-between items-center px-6 md:px-margin-desktop py-4 h-20 w-full">
-            {/* Brand Logo */}
-            <Link className="font-headline-md text-headline-md tracking-tighter text-primary dark:text-on-primary" to="/">REDJFLUER</Link>
-            {/* Desktop Links */}
-            <div className="hidden md:flex items-center gap-8">
-               <Link className="font-label-caps text-label-caps text-primary dark:text-on-primary border-b border-primary pb-1" to="/">Home</Link>
-              <Link className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" to="/shop">Shop</Link>
-             
-              <a className="font-label-caps text-label-caps text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300" href="#">About</a>
-            </div>
-            {/* Trailing Icons */}
-            <div className="flex items-center gap-5 md:gap-6">
-              <button className="hover:opacity-70 transition-opacity duration-300">
-                <span className="material-symbols-outlined">search</span>
-              </button>
-              <Link className="hover:opacity-70 transition-opacity duration-300" to="/account">
-                <span className="material-symbols-outlined">person</span>
-              </Link>
-              <button className="hover:opacity-70 transition-opacity duration-300 hidden sm:block">
-                <span className="material-symbols-outlined">favorite</span>
-              </button>
-              <Link className="hover:opacity-70 transition-opacity duration-300 relative" to="/cart">
-                <span className="material-symbols-outlined">shopping_bag</span>
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-secondary rounded-full"></span>
-              </Link>
-            </div>
-          </nav>
-        </header>
+        <Header transparent={!isScrolled} />
         <main>
           {/* Hero Section */}
           <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
@@ -106,7 +71,7 @@ function Home() {
             </div>
             <div className="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full text-white">
               <div className="max-w-2xl">
-                <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg mb-8 italic">Artistry in Bloom</h1>
+                <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg mb-8 italic"></h1>
                 <p className="font-body-lg text-body-lg mb-10 text-white/90 max-w-lg">Bespoke botanical creations for the discerning soul. Experience nature elevated to an art form.</p>
                 <Link className="inline-block bg-white text-primary px-12 py-5 font-label-caps text-label-caps hover:bg-transparent hover:text-white border border-white transition-all duration-500 ease-in-out" to="/shop">
                   SHOP NOW
@@ -156,7 +121,7 @@ function Home() {
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto mb-12 flex justify-between items-end">
               <div>
                 <span className="font-label-caps text-label-caps text-on-surface-variant block mb-4">JUST REVEALED</span>
-                <h2 className="font-headline-md text-headline-md">New Arrivals</h2>
+                <h2 className="font-headline-md text-headline-md">Best Sellers</h2>
               </div>
               <a className="font-label-caps text-label-caps border-b border-primary pb-1" href="#">VIEW ALL</a>
             </div>
@@ -202,7 +167,7 @@ function Home() {
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto">
               <div className="text-center mb-16">
                 <span className="font-label-caps text-label-caps text-on-surface-variant tracking-[0.3em] block mb-4 uppercase">Curation</span>
-                <h2 className="font-headline-md text-headline-md italic">The Editorial Edit</h2>
+                <h2 className="font-headline-md text-headline-md italic text-black">The Editorial Edit</h2>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
                 {/* Summer Solstice */}
@@ -231,66 +196,6 @@ function Home() {
                     <h3 className="font-display-lg text-display-lg-mobile md:text-headline-md lg:text-display-lg mb-4 italic">Classic Roses</h3>
                     <p className="font-label-caps text-label-caps border border-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">SHOP TIMELESS</p>
                   </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Best Sellers */}
-          <section className="py-section-gap">
-            <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto">
-              <div className="mb-16">
-                <h2 className="font-headline-md text-headline-md mb-4">The Best Sellers</h2>
-                <p className="font-body-md text-on-surface-variant max-w-lg">Our most coveted arrangements, favored by our bloom circle for their timeless appeal.</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
-                {/* Product Card 1 */}
-                <div className="group cursor-pointer">
-                  <div className="aspect-[1/1.25] mb-6 overflow-hidden bg-surface-container relative">
-                    <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="A luxury floral arrangement titled 'Midnight Velvet' with dark calla lilies and deep purple hydrangeas in a matte black vase. The lighting is high-contrast and dramatic, set against a dark textured wall. Premium aesthetic." src="/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg" />
-                    <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur text-primary p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="material-symbols-outlined">add</span>
-                    </button>
-                  </div>
-                  <h3 className="font-headline-sm text-headline-sm mb-1">Midnight Velvet</h3>
-                  <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">SCULPTURAL</p>
-                  <p className="font-label-caps text-label-caps">$180.00</p>
-                </div>
-                {/* Product Card 2 */}
-                <div className="group cursor-pointer">
-                  <div className="aspect-[1/1.25] mb-6 overflow-hidden bg-surface-container relative">
-                    <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="Delicate arrangement named 'Morning Mist' with white sweet peas, baby's breath, and pale blue thistles in a frosted glass bowl. Light, airy, and ethereal lighting with a soft-focus background." src="/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg" />
-                    <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur text-primary p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="material-symbols-outlined">add</span>
-                    </button>
-                  </div>
-                  <h3 className="font-headline-sm text-headline-sm mb-1">Morning Mist</h3>
-                  <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">DELICATE</p>
-                  <p className="font-label-caps text-label-caps">$95.00</p>
-                </div>
-                {/* Product Card 3 */}
-                <div className="group cursor-pointer">
-                  <div className="aspect-[1/1.25] mb-6 overflow-hidden bg-surface-container relative">
-                    <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="Lush bouquet 'Golden Hour' with apricot roses, dahlias, and dried grasses. Warm, glowing sunset lighting on a rustic wooden table. Editorial photography style." src="/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg" />
-                    <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur text-primary p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="material-symbols-outlined">add</span>
-                    </button>
-                  </div>
-                  <h3 className="font-headline-sm text-headline-sm mb-1">Golden Hour</h3>
-                  <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">WARM</p>
-                  <p className="font-label-caps text-label-caps">$130.00</p>
-                </div>
-                {/* Product Card 4 */}
-                <div className="group cursor-pointer">
-                  <div className="aspect-[1/1.25] mb-6 overflow-hidden bg-surface-container relative">
-                    <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="Modern arrangement 'Pure Zen' with a single orchid stem and smooth river stones in a minimalist tray. Very clean lines, neutral colors, and soft shadow work." src="/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg" />
-                    <button className="absolute bottom-4 right-4 bg-white/90 backdrop-blur text-primary p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <span className="material-symbols-outlined">add</span>
-                    </button>
-                  </div>
-                  <h3 className="font-headline-sm text-headline-sm mb-1">Pure Zen</h3>
-                  <p className="font-label-caps text-label-caps text-on-surface-variant mb-2">MINIMAL</p>
-                  <p className="font-label-caps text-label-caps">$110.00</p>
                 </div>
               </div>
             </div>
@@ -363,7 +268,7 @@ function Home() {
           {/* Newsletter Signup */}
           <section className="py-section-gap border-t border-outline-variant/30">
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto text-center max-w-2xl">
-              <h2 className="font-headline-md text-headline-md mb-4 italic">Join our bloom circle</h2>
+              <h2 className="font-headline-md text-headline-md mb-4 italic text-black">Join our bloom circle</h2>
               <p className="font-body-md text-on-surface-variant mb-10">Receive exclusive early access to new collections, botanical care guides, and seasonal inspirations.</p>
               <form className="flex flex-col sm:flex-row gap-4">
                 <input className="flex-grow bg-transparent border-b border-primary py-4 px-2 font-label-caps text-label-caps focus:outline-none focus:border-secondary transition-colors uppercase" placeholder="YOUR EMAIL ADDRESS" type="email" />
@@ -380,7 +285,7 @@ function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-6 md:px-margin-desktop py-section-gap max-w-container-max mx-auto">
             {/* Brand Info */}
             <div className="space-y-6">
-              <h2 className="font-headline-sm text-headline-sm text-primary dark:text-on-primary">FLORETTE</h2>
+              <h2 className="font-headline-sm text-headline-sm text-primary dark:text-on-primary">REDJFLUER</h2>
               <p className="font-body-md text-on-surface-variant leading-relaxed">
                 Elevating the language of flowers through artisanal curation and mindful design.
               </p>
@@ -416,14 +321,14 @@ function Home() {
               <h4 className="font-label-caps text-label-caps mb-8 text-primary">SUPPORT</h4>
               <ul className="space-y-4">
                 <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Shipping &amp; Returns</a></li>
-                <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Floral Care</a></li>
+
                 <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
                 <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
               </ul>
             </div>
           </div>
           <div className="px-6 md:px-margin-desktop py-8 border-t border-outline-variant/10 max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="font-label-caps text-[10px] text-on-surface-variant">© 2024 Florette Botanicals. Artistry in Bloom.</p>
+            <p className="font-label-caps text-[10px] text-on-surface-variant">© 2026 RedJFluer</p>
             <div className="flex gap-8">
               <span className="font-label-caps text-[10px] text-on-surface-variant">VISA</span>
               <span className="font-label-caps text-[10px] text-on-surface-variant">MASTERCARD</span>

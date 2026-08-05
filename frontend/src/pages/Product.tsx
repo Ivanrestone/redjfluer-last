@@ -1,11 +1,12 @@
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
+import Header from '../components/Header'
 
 function Product() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { addToCart, getCartCount } = useCart()
+  const { addToCart } = useCart()
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedSize, setSelectedSize] = useState('Classic')
   const [expandedAccordion, setExpandedAccordion] = useState<number | null>(null)
@@ -14,7 +15,6 @@ function Product() {
   // Animation state
   const [isAnimating, setIsAnimating] = useState(false)
   const [animationStyle, setAnimationStyle] = useState({})
-  const [cartBounce, setCartBounce] = useState(false)
   const addButtonRef = useRef<HTMLButtonElement>(null)
 
   // Scroll to top on mount or when product changes
@@ -98,28 +98,17 @@ function Product() {
       // Start animation after a small delay
       setTimeout(() => {
         setAnimationStyle({
-          position: 'fixed',
+          ...animationStyle,
           left: `${cartRect.left + cartRect.width / 2}px`,
           top: `${cartRect.top + cartRect.height / 2}px`,
-          width: '20px',
-          height: '20px',
-          borderRadius: '50%',
-          backgroundColor: 'var(--color-primary)',
-          zIndex: 9999,
-          transition: 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-          transform: 'translate(-50%, -50%) scale(0.5)',
+          transform: 'translate(-50%, -50%) scale(0)',
+          opacity: '0',
         })
       }, 50)
-
-      // Trigger cart bounce animation
-      setTimeout(() => {
-        setCartBounce(true)
-      }, 700)
 
       // End animation
       setTimeout(() => {
         setIsAnimating(false)
-        setCartBounce(false)
       }, 850)
     }
   }
@@ -159,26 +148,7 @@ function Product() {
         <div style={animationStyle as React.CSSProperties} />
       )}
       
-      <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30">
-        <div className="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
-          <Link className="font-headline-md text-headline-md tracking-tighter text-primary" to="/">REDJFLUER</Link>
-          <nav className="hidden md:flex items-center space-x-12">
-            <Link className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" to="/shop">Shop</Link>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" href="#">Collections</a>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" href="#">About</a>
-          </nav>
-          <div className="flex items-center space-x-6">
-            <button><span className="material-symbols-outlined">search</span></button>
-            <Link to="/account"><span className="material-symbols-outlined">person</span></Link>
-            <button className="hidden sm:block"><span className="material-symbols-outlined">favorite</span></button>
-            <Link to="/cart" className={`relative ${cartBounce ? 'animate-bounce' : ''}`}>
-              <span className="material-symbols-outlined">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{getCartCount()}</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       <main className="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-desktop">
         {/* Product Section: Bento-inspired grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">

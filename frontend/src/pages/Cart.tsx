@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
 import { useCart } from '../context/CartContext'
+import Header from '../components/Header'
+import { useState } from 'react'
 
 function Cart() {
-  const { cartItems, removeFromCart, updateQuantity, getCartTotal, getCartCount } = useCart()
+  const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart()
   const [giftMessage, setGiftMessage] = useState('')
   const [promoCode, setPromoCode] = useState('')
 
@@ -15,30 +16,10 @@ function Cart() {
   }
 
   const subtotal = getCartTotal()
-  const cartCount = getCartCount()
 
   return (
     <div className="bg-surface text-on-surface font-body-md">
-      <header className="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30">
-        <div className="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
-          <Link className="font-headline-md text-headline-md tracking-tighter text-primary" to="/">REDJFLUER</Link>
-          <nav className="hidden md:flex items-center space-x-12">
-            <Link className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" to="/">Home</Link>
-            <Link className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" to="/shop">Shop</Link>
-            <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary" href="#">About</a>
-          </nav>
-          <div className="flex items-center space-x-6">
-            <button><span className="material-symbols-outlined">search</span></button>
-            <Link to="/account"><span className="material-symbols-outlined">person</span></Link>
-            <button className="hidden sm:block"><span className="material-symbols-outlined">favorite</span></button>
-            <Link to="/cart" className="relative">
-              <span className="material-symbols-outlined">shopping_bag</span>
-              <span className="absolute -top-1 -right-1 bg-primary text-on-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full">{cartCount}</span>
-            </Link>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       <main className="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
         <h1 className="font-display-lg text-display-lg mb-12 text-center md:text-left">Your Selection</h1>
         
