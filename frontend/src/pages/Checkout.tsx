@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
 import Header from '../components/Header'
 
 function Checkout() {
   const { cartItems, getCartTotal, clearCart } = useCart()
-  const [selectedDate, setSelectedDate] = useState(24)
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [currentMonth, setCurrentMonth] = useState(new Date())
   const [formData, setFormData] = useState({
     email: '',
     recipientFirstName: '',
@@ -17,6 +18,52 @@ function Checkout() {
     message: ''
   })
 
+  // Calendar logic
+  const getDaysInMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+  }
+
+  const getFirstDayOfMonth = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+  }
+
+  const isDateDisabled = (day: number) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    return checkDate < today
+  }
+
+  const isDateSelected = (day: number) => {
+    if (!selectedDate) return false
+    return selectedDate.getDate() === day &&
+           selectedDate.getMonth() === currentMonth.getMonth() &&
+           selectedDate.getFullYear() === currentMonth.getFullYear()
+  }
+
+  const handleDateSelect = (day: number) => {
+    if (isDateDisabled(day)) return
+    setSelectedDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day))
+  }
+
+  const handlePreviousMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
+  }
+
+  const handleNextMonth = () => {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
+  }
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  }
+
+  const daysInMonth = getDaysInMonth(currentMonth)
+  const firstDayOfMonth = getFirstDayOfMonth(currentMonth)
+  const today = new Date()
+  const earliestDelivery = new Date(today)
+  earliestDelivery.setDate(today.getDate() + 1)
+
   const subtotal = getCartTotal()
   const deliveryFee = 15.00
   const taxes = subtotal * 0.08
@@ -26,14 +73,14 @@ function Checkout() {
     // Send order details as email/message
     const orderDetails = {
       ...formData,
-      deliveryDate: selectedDate,
+      deliveryDate: selectedDate ? formatDate(selectedDate) : 'Not selected',
       items: cartItems,
       total: total.toFixed(2)
     }
-    
+
     // For now, log to console - you can integrate email service later
     console.log('Order Details:', orderDetails)
-    
+
     // Create mailto link for user to send order
     const subject = encodeURIComponent('New Order - FLORETTE Botanicals')
     const body = encodeURIComponent(
@@ -44,14 +91,14 @@ function Checkout() {
       `City: ${formData.city}\n` +
       `State: ${formData.state}\n` +
       `Zip Code: ${formData.zipCode}\n` +
-      `Delivery Date: Oct ${selectedDate}\n` +
+      `Delivery Date: ${selectedDate ? formatDate(selectedDate) : 'Not selected'}\n` +
       `Message: ${formData.message}\n\n` +
       `Items:\n${cartItems.map(item => `- ${item.name} (${item.size}) x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n')}\n\n` +
       `Total: $${total.toFixed(2)}`
     )
-    
+
     window.location.href = `mailto:your-email@example.com?subject=${subject}&body=${body}`
-    
+
     clearCart()
   }
 
@@ -158,35 +205,72 @@ function Checkout() {
               <div className="bg-surface-container-low p-8 border border-outline-variant/20">
                 <div className="flex items-center gap-4 mb-6">
                   <span className="material-symbols-outlined text-primary">calendar_today</span>
-                  <span className="font-body-md">Earliest delivery: Tomorrow, Oct 24th</span>
+                  <span className="font-body-md">Earliest delivery: {formatDate(earliestDelivery)}</span>
                 </div>
-                {/* Mock Calendar Interface */}
-                <div className="grid grid-cols-7 gap-2 text-center border-t border-outline-variant/30 pt-6">
-                  <div className="text-[10px] font-label-caps opacity-50">S</div>
-                  <div className="text-[10px] font-label-caps opacity-50">M</div>
-                  <div className="text-[10px] font-label-caps opacity-50">T</div>
-                  <div className="text-[10px] font-label-caps opacity-50">W</div>
-                  <div className="text-[10px] font-label-caps opacity-50">T</div>
-                  <div className="text-[10px] font-label-caps opacity-50">F</div>
-                  <div className="text-[10px] font-label-caps opacity-50">S</div>
-                  {/* Past days */}
-                  <div className="py-3 text-outline text-body-md opacity-20">20</div>
-                  <div className="py-3 text-outline text-body-md opacity-20">21</div>
-                  <div className="py-3 text-outline text-body-md opacity-20">22</div>
-                  {/* Selectable days */}
-                  {[23, 24, 25, 26, 27, 28, 29, 30, 31, 1, 2].map(day => (
-                    <div 
-                      key={day}
-                      onClick={() => setSelectedDate(day)}
-                      className={`py-3 text-body-md cursor-pointer transition-colors ${
-                        selectedDate === day 
-                          ? 'bg-primary text-on-primary font-bold' 
-                          : 'hover:bg-primary-fixed'
-                      }`}
+                {/* Real Calendar Interface */}
+                <div className="border-t border-outline-variant/30 pt-6">
+                  {/* Month Navigation */}
+                  <div className="flex justify-between items-center mb-6">
+                    <button 
+                      onClick={handlePreviousMonth}
+                      className="p-2 hover:bg-primary-fixed transition-colors"
                     >
-                      {day}
+                      <span className="material-symbols-outlined">chevron_left</span>
+                    </button>
+                    <h3 className="font-headline-sm text-headline-sm text-primary">
+                      {currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                    </h3>
+                    <button 
+                      onClick={handleNextMonth}
+                      className="p-2 hover:bg-primary-fixed transition-colors"
+                    >
+                      <span className="material-symbols-outlined">chevron_right</span>
+                    </button>
+                  </div>
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-7 gap-2 text-center">
+                    {/* Day Headers */}
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">S</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">M</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">T</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">W</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">T</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">F</div>
+                    <div className="text-[10px] font-label-caps opacity-50 py-2">S</div>
+                    {/* Empty cells for days before first day of month */}
+                    {[...Array(firstDayOfMonth)].map((_, i) => (
+                      <div key={`empty-${i}`} className="py-3"></div>
+                    ))}
+                    {/* Days of the month */}
+                    {[...Array(daysInMonth)].map((_, i) => {
+                      const day = i + 1
+                      const disabled = isDateDisabled(day)
+                      const selected = isDateSelected(day)
+                      return (
+                        <div
+                          key={day}
+                          onClick={() => handleDateSelect(day)}
+                          className={`py-3 text-body-md cursor-pointer transition-colors ${
+                            disabled 
+                              ? 'text-outline opacity-20 cursor-not-allowed' 
+                              : selected
+                                ? 'bg-primary text-on-primary font-bold' 
+                                : 'hover:bg-primary-fixed'
+                          }`}
+                        >
+                          {day}
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {/* Selected Date Display */}
+                  {selectedDate && (
+                    <div className="mt-6 pt-4 border-t border-outline-variant/30">
+                      <p className="font-body-md text-primary">
+                        Selected: {formatDate(selectedDate)}
+                      </p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
               <p className="mt-4 text-[12px] italic text-on-surface-variant">Note: Same-day delivery cut-off is 11:00 AM EST.</p>

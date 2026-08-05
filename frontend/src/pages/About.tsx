@@ -43,7 +43,7 @@ function About() {
             </div>
             <h2 className="font-headline-md text-headline-md text-primary mb-6">Sourcing the Extraordinary.</h2>
             <p className="font-body-md text-body-md text-on-surface-variant mb-6">
-              At Florette, we approach floristry as a fine art. Our philosophy is rooted in the belief that every stem possesses a unique architectural quality. We curate our collections not by volume, but by profound aesthetic merit.
+              At RedJFluer, we approach floristry as a fine art. Our philosophy is rooted in the belief that every stem possesses a unique architectural quality. We curate our collections not by volume, but by profound aesthetic merit.
             </p>
             <p className="font-body-md text-body-md text-on-surface-variant">
               Sustainability is integral to our vision. We partner exclusively with boutique growers who employ regenerative farming practices, ensuring that our pursuit of beauty never compromises the earth that sustains it. The finest seasonal blooms, selected with intention, arranged with restraint.
@@ -54,7 +54,7 @@ function About() {
               <img 
                 className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out" 
                 alt="Luxury floral arrangement" 
-                src="/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg"
+                src="/Bouquets/deb272fbafa3125b0b39c2d754c73666.jpg"
               />
               <div className="absolute -bottom-4 -left-4 w-24 h-24 border-l border-b border-primary z-[-1]"></div>
             </div>
@@ -75,7 +75,7 @@ function About() {
               <img 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                 alt="Luxury bouquet arrangement" 
-                src="/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg"
+                src="/BoxWithFlowers/b952e52e0b311cc78c31f346b1f8249b.jpg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
                 <div>
@@ -134,7 +134,7 @@ function About() {
               "Flowers are not merely decorative; they are atmospheric. They possess the power to alter the emotional resonance of a room."
             </p>
             <p className="font-body-md text-body-md text-on-surface-variant mb-8">
-              With a background in contemporary sculpture, Eleanor transitioned to floristry seeking a more ephemeral medium. She founded Florette to bridge the gap between traditional floral design and modern art installations, creating pieces that command attention through quiet sophistication.
+              With a background in contemporary sculpture, Eleanor transitioned to floristry seeking a more ephemeral medium. he founded RedJFluer to bridge the gap between traditional floral design and modern art installations, creating pieces that command attention through quiet sophistication.
             </p>
             <a className="inline-flex items-center space-x-2 border-b border-primary pb-1 group hover:border-transparent transition-colors duration-300" href="#">
               <span className="font-label-caps text-label-caps text-primary uppercase">Read Interview</span>

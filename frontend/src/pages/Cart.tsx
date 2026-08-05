@@ -117,7 +117,7 @@ function Cart() {
       <footer className="w-full bg-surface-container border-t border-outline-variant/20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-section-gap max-w-container-max mx-auto">
           <div className="space-y-6">
-            <span className="font-headline-sm text-headline-sm text-primary">FLORETTE</span>
+            <span className="font-headline-sm text-headline-sm text-primary">REDJFLUER</span>
             <p className="font-body-md text-on-surface-variant">Elevating spaces through sculptural botanical artistry.</p>
           </div>
           <div className="flex flex-col gap-4">
@@ -142,7 +142,7 @@ function Cart() {
           </div>
         </div>
         <div className="px-margin-desktop py-8 border-t border-outline-variant/10 max-w-container-max mx-auto flex justify-between items-center">
-          <p className="font-body-md text-on-surface-variant text-[12px]">© 2024 Florette Botanicals. Artistry in Bloom.</p>
+          <p className="font-body-md text-on-surface-variant text-[12px]">© 2026 RedJFluer</p>
           <div className="flex gap-6">
             <span className="material-symbols-outlined text-on-surface-variant text-xl">public</span>
             <span className="material-symbols-outlined text-on-surface-variant text-xl">language</span>
