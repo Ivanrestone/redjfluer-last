@@ -24,7 +24,7 @@ function Product() {
 
   const products = [
     // Bouquets
-    { id: 1, name: 'Midnight Velvet', price: 145.00, category: 'Bouquets', images: ['/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg', '/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg', '/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg'], description: 'A whisper of midnight in a garden of velvet. Crafted for the soul that finds beauty in the silent poetry of a single bloom.' },
+    { id: 1, name: 'Midnight Velvet', price: 145.00, category: 'Bouquets', images: ['/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'], description: 'A whisper of midnight in a garden of velvet. Crafted for the soul that finds beauty in the silent poetry of a single bloom.' },
     { id: 2, name: 'Rose Elegance', price: 125.00, category: 'Bouquets', images: ['/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg', '/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg', '/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg'], description: 'Classic elegance redefined. Timeless roses arranged with delicate greenery in an elegant glass vessel.' },
     { id: 3, name: 'Pastel Dreams', price: 135.00, category: 'Bouquets', images: ['/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg', '/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg', '/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg'], description: 'Soft pastel peonies and roses in a cream-colored ceramic vase. A dreamy composition for the romantic soul.' },
     { id: 4, name: 'Lavender Bliss', price: 115.00, category: 'Bouquets', images: ['/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg', '/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg', '/Bouquets/c2eb77c637230072d854f88191331dad.jpg'], description: 'Lavender and purple blooms with eucalyptus accents. A calming arrangement for peaceful moments.' },

@@ -58,7 +58,7 @@ function Shop() {
     { id: 34, name: 'Philodendron', price: 70.00, category: 'Plants in Vases', image: '/VaseWithPlant/f582929d4e5d6318b944bfe029764873.jpg' },
   ]
 
-  const categories = ['All Collections', 'Bouquets', 'Flower Boxes', 'Plants in Vases', 'Roses', 'Gifts', 'Luxury Collections']
+  const categories = ['All Collections', 'Bouquets', 'Flower Boxes', 'Plants in Vases']
 
   const filteredProducts = selectedCategory === 'All Collections' 
     ? products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -84,24 +84,7 @@ function Shop() {
     <div className="bg-surface text-on-surface font-body-md">
       <Header />
       <main className="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-desktop">
-        {/* Breadcrumbs & Search */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-          <nav className="flex items-center space-x-4 font-label-caps text-label-caps text-on-surface-variant">
-            <Link className="hover:text-primary transition-colors" to="/">Home</Link>
-            <span className="text-[10px] opacity-40">/</span>
-            <span className="text-primary">Shop All Botanicals</span>
-          </nav>
-          <div className="relative w-full md:w-80 group">
-            <input 
-              className="w-full bg-transparent border-none border-b border-primary py-2 pr-10 focus:ring-0 font-body-md text-on-surface placeholder:text-outline/50 transition-all" 
-              placeholder="Search arrangements..." 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-outline group-hover:text-primary transition-colors">search</span>
-          </div>
-        </div>
+  
 
         <div className="flex flex-col lg:flex-row gap-gutter">
           {/* Filters Sidebar */}
@@ -218,20 +201,7 @@ function Shop() {
               ))}
             </div>
 
-            {/* Pagination */}
-            <nav className="mt-24 flex items-center justify-center space-x-2">
-              <button className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-                <span className="material-symbols-outlined">chevron_left</span>
-              </button>
-              <button className="w-10 h-10 flex items-center justify-center font-label-caps text-label-caps border border-primary text-primary">1</button>
-              <button className="w-10 h-10 flex items-center justify-center font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">2</button>
-              <button className="w-10 h-10 flex items-center justify-center font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">3</button>
-              <span className="px-2 text-on-surface-variant">...</span>
-              <button className="w-10 h-10 flex items-center justify-center font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors">8</button>
-              <button className="w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
-                <span className="material-symbols-outlined">chevron_right</span>
-              </button>
-            </nav>
+
           </div>
         </div>
       </main>
