@@ -82,7 +82,7 @@ function Checkout() {
     console.log('Order Details:', orderDetails)
 
     // Create mailto link for user to send order
-    const subject = encodeURIComponent('New Order - FLORETTE Botanicals')
+    const subject = encodeURIComponent('New Order -  RedJFluer')
     const body = encodeURIComponent(
       `Order Details:\n\n` +
       `Email: ${formData.email}\n` +
@@ -353,7 +353,7 @@ function Checkout() {
       <footer className="bg-surface-container border-t border-outline-variant/20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-section-gap max-w-container-max mx-auto">
           <div className="md:col-span-1">
-            <h2 className="font-headline-sm text-headline-sm text-primary mb-6">FLORETTE</h2>
+            <h2 className="font-headline-sm text-headline-sm text-primary mb-6">REDJFLUER</h2>
             <p className="font-body-md text-on-surface-variant pr-8">Artistry in bloom. We deliver botanical masterpieces designed for the modern romantic.</p>
           </div>
           <div>
@@ -385,7 +385,7 @@ function Checkout() {
           </div>
         </div>
         <div className="px-margin-desktop py-8 border-t border-outline-variant/10 text-center">
-          <p className="font-body-md text-[13px] text-on-surface-variant">© 2024 Florette Botanicals. Artistry in Bloom.</p>
+          <p className="font-body-md text-[13px] text-on-surface-variant">© 2026 REDJFLUER</p>
           <Link className="font-body-md text-[13px] text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity ml-4" to="/admin">Admin</Link>
         </div>
       </footer>

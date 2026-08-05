@@ -210,7 +210,7 @@ function Shop() {
       <footer className="w-full bg-surface-container border-t border-outline-variant/20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-section-gap max-w-container-max mx-auto">
           <div className="space-y-6">
-            <a className="font-headline-sm text-headline-sm text-primary mb-8 block" href="#">FLORETTE</a>
+            <a className="font-headline-sm text-headline-sm text-primary mb-8 block" href="#">RedJFluer</a>
             <p className="font-body-md text-on-surface-variant leading-relaxed max-w-xs">
               Curating nature's finest expressions into botanical art for the modern home.
             </p>
@@ -245,7 +245,7 @@ function Shop() {
           </div>
         </div>
         <div className="px-margin-desktop py-8 border-t border-outline-variant/10 max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="font-body-md text-[13px] text-on-surface-variant opacity-60"> 2024 Florette Botanicals. Artistry in Bloom.</p>
+          <p className="font-body-md text-[13px] text-on-surface-variant opacity-60"> 2026 RedJFluer</p>
           <div className="flex space-x-8">
             <a className="font-body-md text-[13px] text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a>
             <a className="font-body-md text-[13px] text-on-surface-variant opacity-60 hover:opacity-100 transition-opacity" href="#">Terms of Service</a>

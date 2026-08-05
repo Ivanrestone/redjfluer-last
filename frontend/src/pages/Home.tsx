@@ -223,21 +223,24 @@ function Home() {
           <section className="py-section-gap">
             <div className="px-6 md:px-margin-desktop max-w-container-max mx-auto mb-12 text-center">
               <h2 className="font-headline-sm text-headline-sm mb-2 italic">Follow Our Journey</h2>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">@FLORETTEBOTANICALS</p>
+              <p className="font-label-caps text-label-caps text-on-surface-variant">@REDJFLUER</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+
               <div className="aspect-square overflow-hidden cursor-pointer relative group">
-                <img className="w-full h-full object-cover" alt="Instagram preview: A close up of a florist's hands carefully arranging delicate petals. Aesthetic, warm tones, lifestyle photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf9EbiXDyB1JPeF8dHLFVuiS-LF-S2jEIOJKv-lV1uim2MAHlv_V6NYBlDOappmKyzdxrw_8VP2wDmQSi4tMsRrsapIzA4vacOmO5Mfmd3gJtIFGS5pim0JZc-6ISOnoLAcKS86mlxQr4i38yK-x-4YjPCoMqyntMeYcDtoO59cG1htM2AP1-wcuyUm-TBTS79bZxmM-q_ZTFkswPc5G3IwB8Okjh3Rdh8RLdSyZCfjIKD4J6-EVp8GQ" />
+                <img className="w-full h-full object-cover" alt="Instagram preview: A bouquet sitting on the passenger seat of a vintage car. Nostalgic, cinematic feel, warm sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9QnW_OXXq2lEYTOWcNoNS5NtaWdZgnwILG4ouf5QW_CVh3C9OIUc9FN0MvN5CSub99ubtJ2A8mfszUFtgvVvq4jjGg-r__UQRrVk-KhwWYvA9TL4RQJp9ravnFGpB_sZGZrdingmFKRtAGDNJ8ZvNe7uAjaqY1o6WT2lY_ZA9X36a_m759wUIrs2G17YPhSs7jE2zggqwbNCbLFdXH1RWSfdJeZNItoGKu8YykGLfutWir-1M_TAqBg" />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="material-symbols-outlined text-white">favorite</span>
                 </div>
               </div>
+              
               <div className="aspect-square overflow-hidden cursor-pointer relative group">
-                <img className="w-full h-full object-cover" alt="Instagram preview: A minimalist storefront of a luxury flower shop with large glass windows and elegant signage. Clean, modern architecture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwXnNonbXRkcTXJmKmQLAzLe4KHZqsovFNG1ghHJ2enXZEJgiLN2lv3xKjmDjyvz4wI47J8GDO7SVkcYk_ItoNMOEzLdwbG8Ne5f_VWzLI566GZVkItVC8o0M74awloA-DxfU13ZIznVvvSOoYMejT8h318H6tT0xoySun_9x7l9ZYlmINIeGPVuIlYvG2UWr6wmnbNDPF4G5cQZPghfxxTEX-DB4LWEC-OvEUmlskd28aEMWFxRDssA" />
+                <img className="w-full h-full object-cover" alt="Instagram preview: A bouquet sitting on the passenger seat of a vintage car. Nostalgic, cinematic feel, warm sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9QnW_OXXq2lEYTOWcNoNS5NtaWdZgnwILG4ouf5QW_CVh3C9OIUc9FN0MvN5CSub99ubtJ2A8mfszUFtgvVvq4jjGg-r__UQRrVk-KhwWYvA9TL4RQJp9ravnFGpB_sZGZrdingmFKRtAGDNJ8ZvNe7uAjaqY1o6WT2lY_ZA9X36a_m759wUIrs2G17YPhSs7jE2zggqwbNCbLFdXH1RWSfdJeZNItoGKu8YykGLfutWir-1M_TAqBg" />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <span className="material-symbols-outlined text-white">favorite</span>
                 </div>
               </div>
+              
               <div className="aspect-square overflow-hidden cursor-pointer relative group">
                 <img className="w-full h-full object-cover" alt="Instagram preview: A bouquet sitting on the passenger seat of a vintage car. Nostalgic, cinematic feel, warm sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9QnW_OXXq2lEYTOWcNoNS5NtaWdZgnwILG4ouf5QW_CVh3C9OIUc9FN0MvN5CSub99ubtJ2A8mfszUFtgvVvq4jjGg-r__UQRrVk-KhwWYvA9TL4RQJp9ravnFGpB_sZGZrdingmFKRtAGDNJ8ZvNe7uAjaqY1o6WT2lY_ZA9X36a_m759wUIrs2G17YPhSs7jE2zggqwbNCbLFdXH1RWSfdJeZNItoGKu8YykGLfutWir-1M_TAqBg" />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
