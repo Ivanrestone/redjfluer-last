@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 interface HeaderProps {
@@ -7,6 +7,14 @@ interface HeaderProps {
 
 function Header({ transparent = false }: HeaderProps) {
   const { getCartCount } = useCart()
+  const location = useLocation()
+
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/'
+    }
+    return location.pathname.startsWith(path)
+  }
 
   return (
     <header 
@@ -19,9 +27,36 @@ function Header({ transparent = false }: HeaderProps) {
       <div className="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
         <Link className="font-headline-md text-headline-md tracking-tighter text-primary" to="/">REDJFLUER</Link>
         <nav className="hidden md:flex items-center space-x-12">
-          <Link className="font-label-caps text-label-caps text-primary border-b border-primary pb-1" to="/shop">Shop</Link>
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Collections</a>
-          <a className="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">About</a>
+          <Link 
+            className={`font-label-caps text-label-caps transition-colors duration-300 ${
+              isActive('/') 
+                ? 'text-primary border-b border-primary pb-1' 
+                : 'text-on-surface-variant hover:text-primary'
+            }`} 
+            to="/"
+          >
+            Home
+          </Link>
+          <Link 
+            className={`font-label-caps text-label-caps transition-colors duration-300 ${
+              isActive('/shop') 
+                ? 'text-primary border-b border-primary pb-1' 
+                : 'text-on-surface-variant hover:text-primary'
+            }`} 
+            to="/shop"
+          >
+            Shop
+          </Link>
+          <Link 
+            className={`font-label-caps text-label-caps transition-colors duration-300 ${
+              isActive('/about') 
+                ? 'text-primary border-b border-primary pb-1' 
+                : 'text-on-surface-variant hover:text-primary'
+            }`} 
+            to="/about"
+          >
+            About
+          </Link>
         </nav>
         <div className="flex items-center space-x-6">
           <button className="hover:opacity-70 transition-opacity duration-300"><span className="material-symbols-outlined">search</span></button>

@@ -72,8 +72,8 @@ function Home() {
             <div className="relative z-10 px-6 md:px-margin-desktop max-w-container-max mx-auto w-full text-white">
               <div className="max-w-2xl">
                 <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg mb-8 italic"></h1>
-                <p className="font-body-lg text-body-lg mb-10 text-white/90 max-w-lg">Bespoke botanical creations for the discerning soul. Experience nature elevated to an art form.</p>
-                <Link className="inline-block bg-white text-primary px-12 py-5 font-label-caps text-label-caps hover:bg-transparent hover:text-white border border-white transition-all duration-500 ease-in-out" to="/shop">
+           
+                <Link className="in line-block bg-white text-primary px-12 py-5 font-label-caps text-label-caps hover:bg-transparent hover:text-white border border-white transition-all duration-500 ease-in-out" to="/shop">
                   SHOP NOW
                 </Link>
               </div>

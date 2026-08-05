@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Florette Botanicals - About Us</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Montserrat:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#000000",
+                      "on-secondary": "#ffffff",
+                      "on-secondary-fixed": "#241a00",
+                      "on-secondary-fixed-variant": "#574500",
+                      "inverse-primary": "#c8c6c5",
+                      "surface-bright": "#f9f9f9",
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-primary": "#ffffff",
+                      "surface-container": "#eeeeee",
+                      "secondary": "#735c00",
+                      "tertiary-fixed-dim": "#c6c7c2",
+                      "secondary-fixed-dim": "#e9c349",
+                      "primary-fixed": "#e5e2e1",
+                      "outline": "#747878",
+                      "surface-container-highest": "#e2e2e2",
+                      "secondary-container": "#fed65b",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface": "#1a1c1c",
+                      "surface-dim": "#dadada",
+                      "surface-tint": "#5f5e5e",
+                      "on-tertiary-container": "#838480",
+                      "on-background": "#1a1c1c",
+                      "tertiary-container": "#1a1c19",
+                      "surface-container-low": "#f3f3f4",
+                      "on-tertiary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "background": "#f9f9f9",
+                      "error-container": "#ffdad6",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed": "#e3e3de",
+                      "on-primary-container": "#858383",
+                      "outline-variant": "#c4c7c7",
+                      "on-primary-fixed-variant": "#474646",
+                      "inverse-on-surface": "#f0f1f1",
+                      "primary-container": "#1c1b1b",
+                      "on-tertiary-fixed-variant": "#454744",
+                      "on-secondary-container": "#745c00",
+                      "on-surface-variant": "#444748",
+                      "on-tertiary-fixed": "#1a1c19",
+                      "error": "#ba1a1a",
+                      "secondary-fixed": "#ffe088",
+                      "surface": "#f9f9f9",
+                      "surface-container-high": "#e8e8e8",
+                      "inverse-surface": "#2f3131",
+                      "surface-variant": "#e2e2e2",
+                      "tertiary": "#000000"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "gutter": "32px",
+                      "margin-desktop": "64px",
+                      "section-gap": "120px",
+                      "margin-mobile": "20px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "label-caps": [
+                              "Montserrat"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Montserrat"
+                      ],
+                      "body-lg": [
+                              "Montserrat"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "display-lg-mobile": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "0.15em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "15px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "300"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg-mobile": [
+                              "40px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .text-outline {
+            -webkit-text-stroke: 1px currentColor;
+            color: transparent;
+        }
+      </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-x-hidden selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/90 dark:bg-surface/90 backdrop-blur-xl border-b border-outline-variant/30 dark:border-outline/20">
+<div class="flex justify-between items-center px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="hidden md:flex space-x-8 font-label-caps text-label-caps">
+<a class="text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300 ease-in-out" href="#">Shop</a>
+<a class="text-on-surface-variant dark:text-on-tertiary-container hover:text-primary transition-colors duration-300 ease-in-out" href="#">Collections</a>
+<a class="text-primary dark:text-on-primary border-b border-primary pb-1 transition-colors duration-300 ease-in-out" href="#">About</a>
+</div>
+<div class="font-headline-md text-headline-md tracking-tighter text-primary dark:text-on-primary">
+                FLORETTE
+            </div>
+<div class="flex items-center space-x-6 text-primary dark:text-on-primary">
+<a class="hover:opacity-70 transition-opacity duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;">search</span>
+</a>
+<a class="hover:opacity-70 transition-opacity duration-300 ease-in-out hidden md:block" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;">person</span>
+</a>
+<a class="hover:opacity-70 transition-opacity duration-300 ease-in-out hidden md:block" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;">favorite</span>
+</a>
+<a class="hover:opacity-70 transition-opacity duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;">shopping_bag</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Hero Section -->
+<section class="relative h-screen w-full flex items-center justify-center pt-20">
+<div class="absolute inset-0 z-0 parallax-bg" data-alt="A breathtaking, high-end editorial photography shot of a sprawling, deconstructed floral arrangement featuring rare white orchids, black calla lilies, and dried beige pampas grass. The composition is highly asymmetric, set against a pristine, minimalist studio backdrop with soft, diffused natural light pouring in from the left, creating subtle shadows. The aesthetic is extremely luxurious, modern, and quiet, emphasizing the delicate textures of the petals." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEEXhDiALnZyWl0a7B_7tugxOiCASb2qf9F-bvaILVurkcMJn134Y4UpzVty7Xp6l86V8kNjNo325LygZ2xrvtKQ0SU_651GFvkIGzvHAlrlTYN5Ea4vUIH_Ww0v4xpmKuFkVYYcH60j9sZNc_52yrvlIXkpUz5atI4EQfSPP0YecghWmAzazRp1sOPwSQrqE8Zd1zfs8RvdEuqL4b83mtuPMbZGiYRTa7KRgLb9UPhYKmPvyjAqzKCQ')"></div>
+<div class="absolute inset-0 bg-surface/30 mix-blend-multiply z-10"></div>
+<div class="relative z-20 text-center max-w-4xl px-margin-mobile md:px-margin-desktop fade-in-up">
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6">Our Story</h1>
+<p class="font-body-lg text-body-lg text-primary/80 max-w-2xl mx-auto">Artistry in bloom. A dedication to the transient beauty of nature, elevated through deliberate design.</p>
+</div>
+</section>
+<!-- Philosophy Section (Asymmetric Text & Image) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-2 fade-in-up">
+<div class="flex items-center space-x-4 mb-8">
+<div class="h-px w-12 bg-primary"></div>
+<span class="font-label-caps text-label-caps text-primary tracking-widest uppercase">The Philosophy</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary mb-6">Sourcing the Extraordinary.</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                    At Florette, we approach floristry as a fine art. Our philosophy is rooted in the belief that every stem possesses a unique architectural quality. We curate our collections not by volume, but by profound aesthetic merit.
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Sustainability is integral to our vision. We partner exclusively with boutique growers who employ regenerative farming practices, ensuring that our pursuit of beauty never compromises the earth that sustains it. The finest seasonal blooms, selected with intention, arranged with restraint.
+                </p>
+</div>
+<div class="md:col-span-5 md:col-start-8 mt-12 md:mt-0 relative fade-in-up" style="transition-delay: 200ms;">
+<div class="aspect-[3/4] w-full overflow-hidden bg-surface-container-high p-4 relative">
+<img class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out" data-alt="A macro, extreme close-up shot of a single, flawless white ranunculus flower resting on a raw, textured linen cloth in soft beige. The lighting is moody yet bright, highlighting the intricate, paper-thin layers of the petals. A profound sense of stillness and luxury pervades the image. Minimalist and refined." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA8TjbbNUgjyvgwZ7fBiJDXY9K6NMd38Egx1eax2KhyHvYEu9jbwQh1ytff7EFhbj2J7o4Phpm_Uqf3i7E8J55Y0tfOnUD5HGIwt0G2lMcLLN5airlxr4oscqT5sS_mEfkCz6fkPxE7ow7tZqwHyRli10Xev3WjfKJsma2Xxv6AusTBhXtVo0aqiqctbP8P53dBSlYe4qminInz1FjlIYynIrjTqiPF2JqCjY98PK9wGJQhh2M9FpLlA"/>
+<!-- Decor line -->
+<div class="absolute -bottom-4 -left-4 w-24 h-24 border-l border-b border-primary z-[-1]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- The Process Section (Bento Grid) -->
+<section class="py-section-gap bg-surface-container-low">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="text-center mb-16 fade-in-up">
+<span class="font-label-caps text-label-caps text-primary tracking-widest uppercase block mb-4">The Process</span>
+<h2 class="font-headline-sm text-headline-sm text-primary">From Farm to Foyer</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 md:h-[600px]">
+<!-- Large Image Block -->
+<div class="md:col-span-2 md:row-span-2 relative group overflow-hidden fade-in-up">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A high-fashion, editorial photograph of a florist's hands delicately placing a slender, architectural branch into a minimalist matte black ceramic vase. The background is a clean, stark white studio space. The focus is entirely on the precision and grace of the hand movement and the stark contrast between the organic branch and the modern vase." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBi0yn85EDM9yx1uO8UMOZU1KO0qVDZ8doOfASyacNUacbFU7mALOGlY7jpbaDt2VmwtggIc7Z24GGRdpdsviEmDSwxZAd2OlpQB9DL7V1OdQn7UCtfRFQmLvn1s0PU4R2IT4Vf3_Yplh63giHTZOe6bMg6Cr9QM9H84wbNHXlOfUjGRA_ewwxTqLONeS4iIh1ZGQLUyI_eglL9Ut1UC6GZl6Xruq2WCkNK7c3DT8f7hnKGqOQGsYm1gA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-primary mb-2">01. Cultivation</h3>
+<p class="font-body-md text-body-md text-on-primary/80">Ethically grown, meticulously chosen.</p>
+</div>
+</div>
+</div>
+<!-- Text Block -->
+<div class="md:col-span-1 md:row-span-1 bg-surface flex flex-col justify-center p-8 border border-outline-variant/20 fade-in-up" style="transition-delay: 100ms;">
+<h3 class="font-headline-sm text-headline-sm text-primary mb-4">02. Design</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Each arrangement is sketched and conceptualized, focusing on negative space and striking asymmetry.</p>
+</div>
+<!-- Small Image Block -->
+<div class="md:col-span-1 md:row-span-1 relative group overflow-hidden fade-in-up" style="transition-delay: 200ms;">
+<img class="w-full h-full object-cover grayscale transition-transform duration-700 group-hover:scale-105" data-alt="A minimalist flat lay of premium florist tools on a flawless white marble surface: matte black shears, natural twine, and a single stripped rose stem. The lighting is overhead and even, casting subtle, elegant shadows. The mood is precise, professional, and luxurious." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8NAFWYAvH7DJ6n_mdAqml1HOaxfqJ7WFclu7XiQ19PGrgVkvampFBCTlF9oKF9Jhwf_RKwZC3JnxT_V-RRXTqZIdXJPzQz5ILvzUYOcIkDvfMujgMgK29dtfR4-Ns5Xq4O1gf_UkSbNaexWUxYgT7m6f-U9Ns5WLauG_bPVTylFVbhmaBJAIZeifJUFkN7oyGQ2r_H0AsEj63zD-EyohsSUUe3_x7mNhFe5txjPW-fn-a6TVpC9J1jA"/>
+</div>
+<!-- Small Image Block -->
+<div class="md:col-span-1 md:row-span-1 relative group overflow-hidden fade-in-up" style="transition-delay: 300ms;">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up of premium, thick, textured cream-colored paper packaging being folded around a dark floral arrangement. The paper features a subtle, debossed blind logo. The lighting highlights the tactile quality of the heavy paper stock. High-end retail experience aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-RCMd4myoBGLLXyxzC6BRmJX-4CcRpScg9dbrjmoBfsYnzgOLN3nIdq3B-598PEcp9AYc408Bia6Fe7kEkNRVzNB2XYv6iGAKuZFaMQjtQL7QinxxMtjqQ_dkUc362_WLcQB5uK4Je8oL8xQfnlO4Yh4HOx-1fh0IziA5hIQWX2Pgr0srQZeo7yXRkzMFwzMKdfiGpsT22GHwsmq3KcCSp-AqNE5ikmOHXAV0mYQDAxS35AVK5eSCJw"/>
+</div>
+<!-- Text Block -->
+<div class="md:col-span-1 md:row-span-1 bg-primary text-on-primary flex flex-col justify-center p-8 fade-in-up" style="transition-delay: 400ms;">
+<h3 class="font-headline-sm text-headline-sm text-on-primary mb-4">03. Delivery</h3>
+<p class="font-body-md text-body-md text-on-primary/80">Presented in bespoke, climate-controlled packaging to ensure pristine arrival.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Founder Section (Minimalist Profile) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row items-center justify-between gap-gutter">
+<div class="w-full md:w-5/12 order-2 md:order-1 fade-in-up">
+<div class="aspect-square w-full relative">
+<div class="absolute inset-4 border border-primary z-10 pointer-events-none"></div>
+<img class="w-full h-full object-cover p-2" data-alt="A striking, black and white portrait of a sophisticated female founder in her late 30s. She is wearing a minimalist, structured black blazer and looking thoughtfully off-camera. The background is a soft, out-of-focus botanical studio space. The lighting is cinematic, utilizing chiaroscuro to create a deep, luxurious, and authoritative mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAF8JDRHctXn1_N7SgxAzzpMLr2QLn6Ld6tIhS_Bg3t-TAir9fQqJN9VIZo3j12JjBg-646r8lL1LXVI9Diyckks8kY6xs0C37P_4NzfYQoBiWxlKRyeCFguwgaU49MnJh6HyNhFIHa2m7X0Pzlh6YO-pSJXXSnMBcb1YTU70zwHC_HZPrayuBbwdtVQpDicNcxEhQmmXRtfKVDJ7HktQg6X5GgVqcZoP1X1944njcwRVTJb1yBdYQXjA"/>
+</div>
+</div>
+<div class="w-full md:w-6/12 order-1 md:order-2 mb-12 md:mb-0 fade-in-up" style="transition-delay: 200ms;">
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Eleanor Vance</h2>
+<p class="font-label-caps text-label-caps text-on-surface-variant mb-8 uppercase tracking-widest">Founder &amp; Creative Director</p>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6 leading-relaxed">
+                    "Flowers are not merely decorative; they are atmospheric. They possess the power to alter the emotional resonance of a room."
+                </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8">
+                    With a background in contemporary sculpture, Eleanor transitioned to floristry seeking a more ephemeral medium. She founded Florette to bridge the gap between traditional floral design and modern art installations, creating pieces that command attention through quiet sophistication.
+                </p>
+<a class="inline-flex items-center space-x-2 border-b border-primary pb-1 group hover:border-transparent transition-colors duration-300" href="#">
+<span class="font-label-caps text-label-caps text-primary uppercase">Read Interview</span>
+<span class="material-symbols-outlined text-primary group-hover:translate-x-2 transition-transform duration-300" style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;">arrow_right_alt</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="w-full bg-surface-container dark:bg-primary-container border-t border-outline-variant/20 mt-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-section-gap max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="font-headline-sm text-headline-sm text-primary dark:text-on-primary mb-6">
+                    FLORETTE
+                </div>
+<p class="font-body-md text-body-md text-on-surface dark:text-on-primary-container opacity-70">
+                    © 2024 Florette Botanicals. Artistry in Bloom.
+                </p>
+</div>
+<div class="col-span-1 md:col-span-3 flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-12">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:text-secondary transition-colors duration-300 ease-in-out" href="#">Shop All</a>
+<a class="font-body-md text-body-md text-primary font-semibold hover:text-secondary transition-colors duration-300 ease-in-out" href="#">Our Story</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:text-secondary transition-colors duration-300 ease-in-out" href="#">Shipping &amp; Returns</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:text-secondary transition-colors duration-300 ease-in-out" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors hover:text-secondary transition-colors duration-300 ease-in-out" href="#">Contact</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Intersection Observer for fade-in animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in-up').forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+</body></html>
