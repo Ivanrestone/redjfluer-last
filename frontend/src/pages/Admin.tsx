@@ -12,6 +12,8 @@ function Admin() {
   const [recentOrders, setRecentOrders] = useState<any[]>([])
   const [customers, setCustomers] = useState<any[]>([])
   const [adminInfo, setAdminInfo] = useState<any>(null)
+  const [availableImages, setAvailableImages] = useState<any[]>([])
+  const [useExistingImages, setUseExistingImages] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken')
@@ -26,6 +28,16 @@ function Admin() {
       fetchProducts()
     }
   }, [navigate])
+
+  const fetchAvailableImages = async (category: string) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/images/${category}`)
+      const data = await response.json()
+      setAvailableImages(data.images || [])
+    } catch (error) {
+      console.error('Error fetching images:', error)
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
@@ -158,8 +170,8 @@ function Admin() {
       imageUrls = ['/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg']
     }
 
-    const newProduct = {
-      id: editingProduct ? editingProduct.id : Date.now(),
+    const token = localStorage.getItem('adminToken')
+    const productData = {
       name: productForm.name,
       price: parseFloat(productForm.price),
       category: productForm.category,
@@ -168,21 +180,55 @@ function Admin() {
       captions: productForm.captions
     }
 
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? newProduct : p))
-      setEditingProduct(null)
-    } else {
-      setProducts([...products, newProduct])
-    }
+    try {
+      let response
+      if (editingProduct) {
+        response = await fetch(`http://localhost:3001/api/products/${editingProduct._id || editingProduct.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(productData)
+        })
+      } else {
+        response = await fetch('http://localhost:3001/api/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(productData)
+        })
+      }
 
-    localStorage.setItem('products', JSON.stringify(editingProduct ? products.map(p => p.id === editingProduct.id ? newProduct : p) : [...products, newProduct]))
-    setShowAddProduct(false)
-    setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
+      if (response.ok) {
+        fetchProducts()
+        setShowAddProduct(false)
+        setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
+        setEditingProduct(null)
+      }
+    } catch (error) {
+      console.error('Error saving product:', error)
+    }
   }
 
-  const handleDeleteProduct = (id: number) => {
-    setProducts(products.filter(p => p.id !== id))
-    localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)))
+  const handleDeleteProduct = async (id: string | number) => {
+    const token = localStorage.getItem('adminToken')
+    try {
+      const response = await fetch(`http://localhost:3001/api/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        fetchProducts()
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error)
+    }
   }
 
   const handleEditProduct = (product: any) => {
@@ -602,10 +648,10 @@ function Admin() {
                 {/* Products Grid */}
                 <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
                   {products.map((product) => (
-                    <div key={product.id} className="border border-outline-variant/30 bg-surface-container-low overflow-hidden group hover:border-primary transition-all">
+                    <div key={product._id || product.id} className="border border-outline-variant/30 bg-surface-container-low overflow-hidden group hover:border-primary transition-all">
                       <div className="aspect-square bg-surface-container-high relative overflow-hidden">
                         <img
-                          src={product.images[0] || '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'}
+                          src={product.images?.[0] || product.image || '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'}
                           alt={product.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
@@ -617,7 +663,7 @@ function Admin() {
                             <span className="material-symbols-outlined text-sm">edit</span>
                           </button>
                           <button
-                            onClick={() => handleDeleteProduct(product.id)}
+                            onClick={() => handleDeleteProduct(product._id || product.id)}
                             className="p-2 bg-surface/90 backdrop-blur-sm rounded-full hover:bg-error hover:text-on-error transition-colors"
                           >
                             <span className="material-symbols-outlined text-sm">delete</span>
@@ -703,33 +749,104 @@ function Admin() {
                         </div>
                         <div>
                           <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Product Images (up to 3)</label>
-                          {[0, 1, 2].map((index) => (
-                            <div key={index} className="mb-4 p-4 border border-outline-variant/30 rounded-lg">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handleImageUpload(index)(e)}
-                                className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
-                              />
-                              <input
-                                type="text"
-                                placeholder={`Image ${index + 1} caption`}
-                                value={productForm.captions[index]}
-                                onChange={(e) => handleCaptionChange(index)(e)}
-                                className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-2 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
-                              />
-                              {productForm.imagePreviews[index] && (
-                                <div className="mt-2">
+                          
+                          {/* Toggle between upload and select existing */}
+                          <div className="flex gap-4 mb-4">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUseExistingImages(false)
+                                fetchAvailableImages(productForm.category)
+                              }}
+                              className={`px-4 py-2 text-sm font-label-caps tracking-widest transition-all ${
+                                !useExistingImages
+                                  ? 'bg-primary text-on-primary'
+                                  : 'border border-outline-variant/30 text-on-surface-variant hover:border-primary'
+                              }`}
+                            >
+                              Upload New
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setUseExistingImages(true)
+                                fetchAvailableImages(productForm.category)
+                              }}
+                              className={`px-4 py-2 text-sm font-label-caps tracking-widest transition-all ${
+                                useExistingImages
+                                  ? 'bg-primary text-on-primary'
+                                  : 'border border-outline-variant/30 text-on-surface-variant hover:border-primary'
+                              }`}
+                            >
+                              Select from Folder
+                            </button>
+                          </div>
+
+                          {useExistingImages ? (
+                            // Select from existing images
+                            <div className="grid grid-cols-4 gap-2 mb-4">
+                              {availableImages.map((img: any) => (
+                                <div
+                                  key={img.path}
+                                  onClick={() => {
+                                    const newPreviews = [...productForm.imagePreviews]
+                                    const firstEmptyIndex = newPreviews.findIndex(p => p === '')
+                                    if (firstEmptyIndex !== -1) {
+                                      newPreviews[firstEmptyIndex] = img.path
+                                      setProductForm({ ...productForm, imagePreviews: newPreviews })
+                                    }
+                                  }}
+                                  className={`cursor-pointer border-2 rounded-lg overflow-hidden transition-all ${
+                                    productForm.imagePreviews.includes(img.path)
+                                      ? 'border-primary'
+                                      : 'border-outline-variant/30 hover:border-primary'
+                                  }`}
+                                >
                                   <img
-                                    src={productForm.imagePreviews[index]}
-                                    alt={`Preview ${index + 1}`}
-                                    className="w-24 h-24 object-cover rounded-lg border border-outline-variant/30"
+                                    src={img.path}
+                                    alt={img.filename}
+                                    className="w-full h-20 object-cover"
                                   />
                                 </div>
-                              )}
+                              ))}
                             </div>
-                          ))}
-                          <p className="text-xs text-on-surface-variant mt-2">Upload up to 3 image files (JPG, PNG, etc.) with optional captions</p>
+                          ) : (
+                            // Upload new images
+                            <>
+                              {[0, 1, 2].map((index) => (
+                                <div key={index} className="mb-4 p-4 border border-outline-variant/30 rounded-lg">
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => handleImageUpload(index)(e)}
+                                    className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
+                                  />
+                                  <input
+                                    type="text"
+                                    placeholder={`Image ${index + 1} caption`}
+                                    value={productForm.captions[index]}
+                                    onChange={(e) => handleCaptionChange(index)(e)}
+                                    className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-2 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
+                                  />
+                                  {productForm.imagePreviews[index] && (
+                                    <div className="mt-2">
+                                      <img
+                                        src={productForm.imagePreviews[index]}
+                                        alt={`Preview ${index + 1}`}
+                                        className="w-24 h-24 object-cover rounded-lg border border-outline-variant/30"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </>
+                          )}
+                          <p className="text-xs text-on-surface-variant mt-2">
+                            {useExistingImages
+                              ? 'Click images to select them for this product (max 3)'
+                              : 'Upload up to 3 image files (JPG, PNG, etc.) with optional captions'
+                            }
+                          </p>
                         </div>
                         <div className="flex gap-4 pt-4">
                           <button

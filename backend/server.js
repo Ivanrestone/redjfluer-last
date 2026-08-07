@@ -344,6 +344,37 @@ app.get('/api/customers', verifyAdminToken, async (req, res) => {
   }
 });
 
+// Get available images from category folders
+app.get('/api/images/:category', async (req, res) => {
+  try {
+    const category = req.params.category;
+    const validCategories = ['Bouquets', 'BoxWithFlowers', 'VaseWithPlant'];
+
+    if (!validCategories.includes(category)) {
+      return res.status(400).json({ error: 'Invalid category' });
+    }
+
+    const categoryPath = path.join(__dirname, '../frontend/public', category);
+
+    if (!fs.existsSync(categoryPath)) {
+      return res.json({ images: [] });
+    }
+
+    const files = fs.readdirSync(categoryPath);
+    const imageFiles = files.filter(file =>
+      /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
+    ).map(file => ({
+      filename: file,
+      path: `/${category}/${file}`
+    }));
+
+    res.json({ images: imageFiles });
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    res.status(500).json({ error: 'Failed to fetch images' });
+  }
+});
+
 // ==================== MESSAGES API ====================
 
 // Get all messages
