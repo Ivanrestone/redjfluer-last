@@ -18,45 +18,98 @@ function Shop() {
     }
   }, [searchParams])
 
-  const products = [
-    // Bouquets
-    { id: 1, name: 'Midnight Velvet', price: 145.00, category: 'Bouquets', image: '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg', limited: true },
-    { id: 2, name: 'Rose Elegance', price: 125.00, category: 'Bouquets', image: '/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg' },
-    { id: 3, name: 'Pastel Dreams', price: 135.00, category: 'Bouquets', image: '/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg' },
-    { id: 4, name: 'Lavender Bliss', price: 115.00, category: 'Bouquets', image: '/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg' },
-    { id: 5, name: 'Sunset Glow', price: 155.00, category: 'Bouquets', image: '/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg' },
-    { id: 6, name: 'Summer Solstice', price: 165.00, category: 'Bouquets', image: '/Bouquets/c2eb77c637230072d854f88191331dad.jpg' },
-    { id: 7, name: 'Garden Party', price: 140.00, category: 'Bouquets', image: '/Bouquets/deb272fbafa3125b0b39c2d754c73666.jpg' },
-    // Flower Boxes
-    { id: 8, name: 'Velvet Rose Box', price: 180.00, category: 'Flower Boxes', image: '/BoxWithFlowers/27612b8d2ee543549d3be8fb7258c0f6.jpg' },
-    { id: 9, name: 'Pink Paradise', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/2d69e76d6fe4b4c1d939928f03199826.jpg' },
-    { id: 10, name: 'Elegant White', price: 175.00, category: 'Flower Boxes', image: '/BoxWithFlowers/338fa0aac56fd8f177b7c0c6d98da193.jpg' },
-    { id: 11, name: 'Romantic Red', price: 200.00, category: 'Flower Boxes', image: '/BoxWithFlowers/3c77806568ab868dd4cad5f6738f5d59.jpg' },
-    { id: 12, name: 'Pastel Harmony', price: 185.00, category: 'Flower Boxes', image: '/BoxWithFlowers/40c03a219ed4b620006840ba3ba8523b.jpg' },
-    { id: 13, name: 'Luxury Gold', price: 220.00, category: 'Flower Boxes', image: '/BoxWithFlowers/4e3cd3b5d1d4f43628809c441c394391.jpg' },
-    { id: 14, name: 'Blush Beauty', price: 190.00, category: 'Flower Boxes', image: '/BoxWithFlowers/5320543dac1a21f11fc19510a7aa9bf8.jpg' },
-    { id: 15, name: 'Classic Charm', price: 170.00, category: 'Flower Boxes', image: '/BoxWithFlowers/77cb73c253d273c4f21227411c8c27c9.jpg' },
-    { id: 16, name: 'Sweet Peony', price: 165.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8401582e05f17cb515a854073a426bf3.jpg' },
-    { id: 17, name: 'Daisy Delight', price: 150.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8c66c11f12bfde1711e72990f75f9c6f.jpg' },
-    { id: 18, name: 'Garden Fresh', price: 160.00, category: 'Flower Boxes', image: '/BoxWithFlowers/953992a4c1ac56646864bbb7780b777d.jpg' },
-    { id: 19, name: 'Spring Bloom', price: 155.00, category: 'Flower Boxes', image: '/BoxWithFlowers/aabb9061d414e23967c59a1f8eac512c.jpg' },
-    { id: 20, name: 'Floral Fantasy', price: 210.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b3dec93b3871b6c2be6aff62a309bf3a.jpg' },
-    { id: 21, name: 'Rose Garden', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b952e52e0b311cc78c31f346b1f8249b.jpg' },
-    { id: 22, name: 'Eternal Love', price: 205.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f1724a19b98c14376aa8e80d894f6b30.jpg' },
-    { id: 23, name: 'Golden Hour', price: 215.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f5202108e15f742c9ac42619f3444ab8.jpg' },
-    // Plants in Vases
-    { id: 24, name: 'Monstera Elegance', price: 95.00, category: 'Plants in Vases', image: '/VaseWithPlant/64ccdf1005165dcb06355e147127fa9b.jpg' },
-    { id: 25, name: 'Fiddle Leaf', price: 110.00, category: 'Plants in Vases', image: '/VaseWithPlant/671746f94e2a24fa3ec0115c0c4bd841.jpg' },
-    { id: 26, name: 'Snake Plant', price: 75.00, category: 'Plants in Vases', image: '/VaseWithPlant/7663e4943b0e5d2b02627c489d64f9af.jpg' },
-    { id: 27, name: 'Peace Lily', price: 85.00, category: 'Plants in Vases', image: '/VaseWithPlant/7e9a6c39805e17c5eea3115985b1efab.jpg' },
-    { id: 28, name: 'Pothos Beauty', price: 65.00, category: 'Plants in Vases', image: '/VaseWithPlant/98074d12d9846ec16c5a1cffe00e11b2.jpg' },
-    { id: 29, name: 'Rubber Plant', price: 90.00, category: 'Plants in Vases', image: '/VaseWithPlant/a90d35f7efaa57c687da6fa43fc2405e.jpg' },
-    { id: 30, name: 'Dracaena Grace', price: 105.00, category: 'Plants in Vases', image: '/VaseWithPlant/aa532d7cf58cd126c5f2e0f0a8fb0dc3.jpg' },
-    { id: 31, name: 'Bamboo Zen', price: 80.00, category: 'Plants in Vases', image: '/VaseWithPlant/c1e4b766cddc6b0cb5d6cde7cb3db99d.jpg' },
-    { id: 32, name: 'Succulent Garden', price: 55.00, category: 'Plants in Vases', image: '/VaseWithPlant/d5eb9fe46892d2ecc37681cb1fc8efbc.jpg' },
-    { id: 33, name: 'Orchid Elegance', price: 120.00, category: 'Plants in Vases', image: '/VaseWithPlant/d701d602bd218fe5c2a93d42e607eecb.jpg' },
-    { id: 34, name: 'Philodendron', price: 70.00, category: 'Plants in Vases', image: '/VaseWithPlant/f582929d4e5d6318b944bfe029764873.jpg' },
-  ]
+  // Load products from localStorage or use default
+  const getProducts = () => {
+    const savedProducts = localStorage.getItem('products')
+    if (savedProducts) {
+      const parsed = JSON.parse(savedProducts)
+      // Merge with default products, giving priority to saved ones
+      const defaultProducts = [
+        // Bouquets
+        { id: 1, name: 'Midnight Velvet', price: 145.00, category: 'Bouquets', image: '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg', limited: true },
+        { id: 2, name: 'Rose Elegance', price: 125.00, category: 'Bouquets', image: '/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg' },
+        { id: 3, name: 'Pastel Dreams', price: 135.00, category: 'Bouquets', image: '/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg' },
+        { id: 4, name: 'Lavender Bliss', price: 115.00, category: 'Bouquets', image: '/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg' },
+        { id: 5, name: 'Sunset Glow', price: 155.00, category: 'Bouquets', image: '/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg' },
+        { id: 6, name: 'Summer Solstice', price: 165.00, category: 'Bouquets', image: '/Bouquets/c2eb77c637230072d854f88191331dad.jpg' },
+        { id: 7, name: 'Garden Party', price: 140.00, category: 'Bouquets', image: '/Bouquets/deb272fbafa3125b0b39c2d754c73666.jpg' },
+        // Flower Boxes
+        { id: 8, name: 'Velvet Rose Box', price: 180.00, category: 'Flower Boxes', image: '/BoxWithFlowers/27612b8d2ee543549d3be8fb7258c0f6.jpg' },
+        { id: 9, name: 'Pink Paradise', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/2d69e76d6fe4b4c1d939928f03199826.jpg' },
+        { id: 10, name: 'Elegant White', price: 175.00, category: 'Flower Boxes', image: '/BoxWithFlowers/338fa0aac56fd8f177b7c0c6d98da193.jpg' },
+        { id: 11, name: 'Romantic Red', price: 200.00, category: 'Flower Boxes', image: '/BoxWithFlowers/3c77806568ab868dd4cad5f6738f5d59.jpg' },
+        { id: 12, name: 'Pastel Harmony', price: 185.00, category: 'Flower Boxes', image: '/BoxWithFlowers/40c03a219ed4b620006840ba3ba8523b.jpg' },
+        { id: 13, name: 'Luxury Gold', price: 220.00, category: 'Flower Boxes', image: '/BoxWithFlowers/4e3cd3b5d1d4f43628809c441c394391.jpg' },
+        { id: 14, name: 'Blush Beauty', price: 190.00, category: 'Flower Boxes', image: '/BoxWithFlowers/5320543dac1a21f11fc19510a7aa9bf8.jpg' },
+        { id: 15, name: 'Classic Charm', price: 170.00, category: 'Flower Boxes', image: '/BoxWithFlowers/77cb73c253d273c4f21227411c8c27c9.jpg' },
+        { id: 16, name: 'Sweet Peony', price: 165.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8401582e05f17cb515a854073a426bf3.jpg' },
+        { id: 17, name: 'Daisy Delight', price: 150.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8c66c11f12bfde1711e72990f75f9c6f.jpg' },
+        { id: 18, name: 'Garden Fresh', price: 160.00, category: 'Flower Boxes', image: '/BoxWithFlowers/953992a4c1ac56646864bbb7780b777d.jpg' },
+        { id: 19, name: 'Spring Bloom', price: 155.00, category: 'Flower Boxes', image: '/BoxWithFlowers/aabb9061d414e23967c59a1f8eac512c.jpg' },
+        { id: 20, name: 'Floral Fantasy', price: 210.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b3dec93b3871b6c2be6aff62a309bf3a.jpg' },
+        { id: 21, name: 'Rose Garden', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b952e52e0b311cc78c31f346b1f8249b.jpg' },
+        { id: 22, name: 'Eternal Love', price: 205.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f1724a19b98c14376aa8e80d894f6b30.jpg' },
+        { id: 23, name: 'Golden Hour', price: 215.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f5202108e15f742c9ac42619f3444ab8.jpg' },
+        // Plants in Vases
+        { id: 24, name: 'Monstera Elegance', price: 95.00, category: 'Plants in Vases', image: '/VaseWithPlant/64ccdf1005165dcb06355e147127fa9b.jpg' },
+        { id: 25, name: 'Fiddle Leaf', price: 110.00, category: 'Plants in Vases', image: '/VaseWithPlant/671746f94e2a24fa3ec0115c0c4bd841.jpg' },
+        { id: 26, name: 'Snake Plant', price: 75.00, category: 'Plants in Vases', image: '/VaseWithPlant/7663e4943b0e5d2b02627c489d64f9af.jpg' },
+        { id: 27, name: 'Peace Lily', price: 85.00, category: 'Plants in Vases', image: '/VaseWithPlant/7e9a6c39805e17c5eea3115985b1efab.jpg' },
+        { id: 28, name: 'Pothos Beauty', price: 65.00, category: 'Plants in Vases', image: '/VaseWithPlant/98074d12d9846ec16c5a1cffe00e11b2.jpg' },
+        { id: 29, name: 'Rubber Plant', price: 90.00, category: 'Plants in Vases', image: '/VaseWithPlant/a90d35f7efaa57c687da6fa43fc2405e.jpg' },
+        { id: 30, name: 'Dracaena Grace', price: 105.00, category: 'Plants in Vases', image: '/VaseWithPlant/aa532d7cf58cd126c5f2e0f0a8fb0dc3.jpg' },
+        { id: 31, name: 'Bamboo Zen', price: 80.00, category: 'Plants in Vases', image: '/VaseWithPlant/c1e4b766cddc6b0cb5d6cde7cb3db99d.jpg' },
+        { id: 32, name: 'Succulent Garden', price: 55.00, category: 'Plants in Vases', image: '/VaseWithPlant/d5eb9fe46892d2ecc37681cb1fc8efbc.jpg' },
+        { id: 33, name: 'Orchid Elegance', price: 120.00, category: 'Plants in Vases', image: '/VaseWithPlant/d701d602bd218fe5c2a93d42e607eecb.jpg' },
+        { id: 34, name: 'Philodendron', price: 70.00, category: 'Plants in Vases', image: '/VaseWithPlant/f582929d4e5d6318b944bfe029764873.jpg' },
+      ]
+      // Combine saved products with default, replacing any that have the same ID
+      const savedIds = new Set(parsed.map((p: any) => p.id))
+      const defaultNotInSaved = defaultProducts.filter((p: any) => !savedIds.has(p.id))
+      return [...parsed, ...defaultNotInSaved]
+    }
+    return [
+      // Bouquets
+      { id: 1, name: 'Midnight Velvet', price: 145.00, category: 'Bouquets', image: '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg', limited: true },
+      { id: 2, name: 'Rose Elegance', price: 125.00, category: 'Bouquets', image: '/Bouquets/62b19dfc90fc8efe38fefefeaf06aed8.jpg' },
+      { id: 3, name: 'Pastel Dreams', price: 135.00, category: 'Bouquets', image: '/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg' },
+      { id: 4, name: 'Lavender Bliss', price: 115.00, category: 'Bouquets', image: '/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg' },
+      { id: 5, name: 'Sunset Glow', price: 155.00, category: 'Bouquets', image: '/Bouquets/ad5903ee1299c87b4ea63220bbec4af0.jpg' },
+      { id: 6, name: 'Summer Solstice', price: 165.00, category: 'Bouquets', image: '/Bouquets/c2eb77c637230072d854f88191331dad.jpg' },
+      { id: 7, name: 'Garden Party', price: 140.00, category: 'Bouquets', image: '/Bouquets/deb272fbafa3125b0b39c2d754c73666.jpg' },
+      // Flower Boxes
+      { id: 8, name: 'Velvet Rose Box', price: 180.00, category: 'Flower Boxes', image: '/BoxWithFlowers/27612b8d2ee543549d3be8fb7258c0f6.jpg' },
+      { id: 9, name: 'Pink Paradise', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/2d69e76d6fe4b4c1d939928f03199826.jpg' },
+      { id: 10, name: 'Elegant White', price: 175.00, category: 'Flower Boxes', image: '/BoxWithFlowers/338fa0aac56fd8f177b7c0c6d98da193.jpg' },
+      { id: 11, name: 'Romantic Red', price: 200.00, category: 'Flower Boxes', image: '/BoxWithFlowers/3c77806568ab868dd4cad5f6738f5d59.jpg' },
+      { id: 12, name: 'Pastel Harmony', price: 185.00, category: 'Flower Boxes', image: '/BoxWithFlowers/40c03a219ed4b620006840ba3ba8523b.jpg' },
+      { id: 13, name: 'Luxury Gold', price: 220.00, category: 'Flower Boxes', image: '/BoxWithFlowers/4e3cd3b5d1d4f43628809c441c394391.jpg' },
+      { id: 14, name: 'Blush Beauty', price: 190.00, category: 'Flower Boxes', image: '/BoxWithFlowers/5320543dac1a21f11fc19510a7aa9bf8.jpg' },
+      { id: 15, name: 'Classic Charm', price: 170.00, category: 'Flower Boxes', image: '/BoxWithFlowers/77cb73c253d273c4f21227411c8c27c9.jpg' },
+      { id: 16, name: 'Sweet Peony', price: 165.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8401582e05f17cb515a854073a426bf3.jpg' },
+      { id: 17, name: 'Daisy Delight', price: 150.00, category: 'Flower Boxes', image: '/BoxWithFlowers/8c66c11f12bfde1711e72990f75f9c6f.jpg' },
+      { id: 18, name: 'Garden Fresh', price: 160.00, category: 'Flower Boxes', image: '/BoxWithFlowers/953992a4c1ac56646864bbb7780b777d.jpg' },
+      { id: 19, name: 'Spring Bloom', price: 155.00, category: 'Flower Boxes', image: '/BoxWithFlowers/aabb9061d414e23967c59a1f8eac512c.jpg' },
+      { id: 20, name: 'Floral Fantasy', price: 210.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b3dec93b3871b6c2be6aff62a309bf3a.jpg' },
+      { id: 21, name: 'Rose Garden', price: 195.00, category: 'Flower Boxes', image: '/BoxWithFlowers/b952e52e0b311cc78c31f346b1f8249b.jpg' },
+      { id: 22, name: 'Eternal Love', price: 205.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f1724a19b98c14376aa8e80d894f6b30.jpg' },
+      { id: 23, name: 'Golden Hour', price: 215.00, category: 'Flower Boxes', image: '/BoxWithFlowers/f5202108e15f742c9ac42619f3444ab8.jpg' },
+      // Plants in Vases
+      { id: 24, name: 'Monstera Elegance', price: 95.00, category: 'Plants in Vases', image: '/VaseWithPlant/64ccdf1005165dcb06355e147127fa9b.jpg' },
+      { id: 25, name: 'Fiddle Leaf', price: 110.00, category: 'Plants in Vases', image: '/VaseWithPlant/671746f94e2a24fa3ec0115c0c4bd841.jpg' },
+      { id: 26, name: 'Snake Plant', price: 75.00, category: 'Plants in Vases', image: '/VaseWithPlant/7663e4943b0e5d2b02627c489d64f9af.jpg' },
+      { id: 27, name: 'Peace Lily', price: 85.00, category: 'Plants in Vases', image: '/VaseWithPlant/7e9a6c39805e17c5eea3115985b1efab.jpg' },
+      { id: 28, name: 'Pothos Beauty', price: 65.00, category: 'Plants in Vases', image: '/VaseWithPlant/98074d12d9846ec16c5a1cffe00e11b2.jpg' },
+      { id: 29, name: 'Rubber Plant', price: 90.00, category: 'Plants in Vases', image: '/VaseWithPlant/a90d35f7efaa57c687da6fa43fc2405e.jpg' },
+      { id: 30, name: 'Dracaena Grace', price: 105.00, category: 'Plants in Vases', image: '/VaseWithPlant/aa532d7cf58cd126c5f2e0f0a8fb0dc3.jpg' },
+      { id: 31, name: 'Bamboo Zen', price: 80.00, category: 'Plants in Vases', image: '/VaseWithPlant/c1e4b766cddc6b0cb5d6cde7cb3db99d.jpg' },
+      { id: 32, name: 'Succulent Garden', price: 55.00, category: 'Plants in Vases', image: '/VaseWithPlant/d5eb9fe46892d2ecc37681cb1fc8efbc.jpg' },
+      { id: 33, name: 'Orchid Elegance', price: 120.00, category: 'Plants in Vases', image: '/VaseWithPlant/d701d602bd218fe5c2a93d42e607eecb.jpg' },
+      { id: 34, name: 'Philodendron', price: 70.00, category: 'Plants in Vases', image: '/VaseWithPlant/f582929d4e5d6318b944bfe029764873.jpg' },
+    ]
+  }
+
+  const products = getProducts()
 
   const categories = ['All Collections', 'Bouquets', 'Flower Boxes', 'Plants in Vases']
 
@@ -76,7 +129,7 @@ function Shop() {
       name: product.name,
       size: 'Classic',
       price: product.price,
-      image: product.image
+      image: product.images ? product.images[0] : product.image
     })
   }
 
@@ -167,10 +220,10 @@ function Shop() {
               {sortedProducts.map(product => (
                 <Link key={product.id} to={`/product/${product.id}`} className="product-card group cursor-pointer block">
                   <div className="relative aspect-[4/5] bg-surface-container overflow-hidden mb-6">
-                    <img 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                    <img
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       alt={product.name}
-                      src={product.image}
+                      src={product.images ? product.images[0] : product.image}
                     />
                     <div className="product-actions absolute inset-x-0 bottom-0 p-6 flex flex-col gap-2 opacity-0 translate-y-4 transition-all duration-300">
                       <button 

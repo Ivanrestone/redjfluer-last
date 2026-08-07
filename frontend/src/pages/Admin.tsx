@@ -1,8 +1,113 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 function Admin() {
   const [activeNav, setActiveNav] = useState('analytics')
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
+  const [showAddProduct, setShowAddProduct] = useState(false)
+  const [products, setProducts] = useState<any[]>([])
+  const [editingProduct, setEditingProduct] = useState<any>(null)
+
+  const [productForm, setProductForm] = useState({
+    name: '',
+    price: '',
+    category: 'Bouquets',
+    description: '',
+    image: null as File | null,
+    imagePreview: ''
+  })
+
+  useEffect(() => {
+    const savedProducts = localStorage.getItem('products')
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts))
+    }
+  }, [])
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setProductForm({ ...productForm, image: file, imagePreview: URL.createObjectURL(file) })
+    }
+  }
+
+  const handleProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    let imageUrl = productForm.imagePreview
+
+    // If there's a new image file, upload it to the backend
+    if (productForm.image) {
+      const formData = new FormData()
+      formData.append('image', productForm.image)
+      formData.append('category', productForm.category)
+
+      try {
+        const response = await fetch('http://localhost:3001/api/upload', {
+          method: 'POST',
+          body: formData
+        })
+
+        const data = await response.json()
+        if (data.success) {
+          imageUrl = data.imagePath
+        } else {
+          console.error('Upload failed:', data.error)
+          // Fallback to default if upload fails
+          imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
+        }
+      } catch (error) {
+        console.error('Upload error:', error)
+        // Fallback to default if upload fails
+        imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
+      }
+    } else if (editingProduct) {
+      // If editing and no new image uploaded, keep the existing image
+      imageUrl = editingProduct.images[0]
+    }
+
+    // If no image at all, use default
+    if (!imageUrl) {
+      imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
+    }
+
+    const newProduct = {
+      id: editingProduct ? editingProduct.id : Date.now(),
+      name: productForm.name,
+      price: parseFloat(productForm.price),
+      category: productForm.category,
+      description: productForm.description,
+      images: [imageUrl]
+    }
+
+    if (editingProduct) {
+      setProducts(products.map(p => p.id === editingProduct.id ? newProduct : p))
+      setEditingProduct(null)
+    } else {
+      setProducts([...products, newProduct])
+    }
+
+    localStorage.setItem('products', JSON.stringify(editingProduct ? products.map(p => p.id === editingProduct.id ? newProduct : p) : [...products, newProduct]))
+    setShowAddProduct(false)
+    setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+  }
+
+  const handleDeleteProduct = (id: number) => {
+    setProducts(products.filter(p => p.id !== id))
+    localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)))
+  }
+
+  const handleEditProduct = (product: any) => {
+    setEditingProduct(product)
+    setProductForm({
+      name: product.name,
+      price: product.price.toString(),
+      category: product.category,
+      description: product.description,
+      image: null,
+      imagePreview: product.images[0] || ''
+    })
+    setShowAddProduct(true)
+  }
 
   const navItems = [
     { id: 'analytics', label: 'Analytics', icon: 'analytics' },
@@ -379,6 +484,171 @@ function Admin() {
                           <p className="font-headline-sm text-headline-sm text-primary">{selectedOrder.amount}</p>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : activeNav === 'products' ? (
+              <>
+                {/* Products View */}
+                <section className="flex flex-col md:flex-row justify-between items-end gap-6">
+                  <div>
+                    <h2 className="font-headline-md text-headline-md text-primary">Product Management</h2>
+                    <p className="font-body-md text-on-surface-variant">Add, edit, and manage your product catalog.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditingProduct(null)
+                      setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                      setShowAddProduct(true)
+                    }}
+                    className="px-6 py-3 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest hover:bg-transparent hover:text-primary border border-primary transition-all duration-300"
+                  >
+                    Add New Product
+                  </button>
+                </section>
+
+                {/* Products Grid */}
+                <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+                  {products.map((product) => (
+                    <div key={product.id} className="border border-outline-variant/30 bg-surface-container-low overflow-hidden group hover:border-primary transition-all">
+                      <div className="aspect-square bg-surface-container-high relative overflow-hidden">
+                        <img
+                          src={product.images[0] || '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'}
+                          alt={product.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          <button
+                            onClick={() => handleEditProduct(product)}
+                            className="p-2 bg-surface/90 backdrop-blur-sm rounded-full hover:bg-primary hover:text-on-primary transition-colors"
+                          >
+                            <span className="material-symbols-outlined text-sm">edit</span>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="p-2 bg-surface/90 backdrop-blur-sm rounded-full hover:bg-error hover:text-on-error transition-colors"
+                          >
+                            <span className="material-symbols-outlined text-sm">delete</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-headline-sm text-headline-sm text-primary line-clamp-1">{product.name}</h3>
+                          <span className="font-body-md font-semibold">${product.price.toFixed(2)}</span>
+                        </div>
+                        <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-3">{product.category}</p>
+                        <p className="font-body-md text-on-surface-variant text-sm line-clamp-2">{product.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </section>
+
+                {/* Add/Edit Product Modal */}
+                {showAddProduct && (
+                  <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-surface max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                      <div className="p-8 border-b border-outline-variant/30 flex justify-between items-center">
+                        <h3 className="font-headline-md text-headline-md text-primary">
+                          {editingProduct ? 'Edit Product' : 'Add New Product'}
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setShowAddProduct(false)
+                            setEditingProduct(null)
+                            setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                          }}
+                          className="material-symbols-outlined text-outline hover:text-primary"
+                        >
+                          close
+                        </button>
+                      </div>
+                      <form onSubmit={handleProductSubmit} className="p-8 space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Product Name</label>
+                            <input
+                              type="text"
+                              value={productForm.name}
+                              onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
+                              className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                              required
+                            />
+                          </div>
+                          <div>
+                            <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Price ($)</label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={productForm.price}
+                              onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+                              className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Category</label>
+                          <select
+                            value={productForm.category}
+                            onChange={(e) => setProductForm({ ...productForm, category: e.target.value })}
+                            className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                          >
+                            <option value="Bouquets">Bouquets</option>
+                            <option value="BoxWithFlowers">Box With Flowers</option>
+                            <option value="VaseWithPlant">Vase With Plant</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Description</label>
+                          <textarea
+                            value={productForm.description}
+                            onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                            rows={4}
+                            className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all resize-none"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Product Image</label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                          />
+                          {productForm.imagePreview && (
+                            <div className="mt-4">
+                              <img
+                                src={productForm.imagePreview}
+                                alt="Preview"
+                                className="w-32 h-32 object-cover rounded-lg border border-outline-variant/30"
+                              />
+                            </div>
+                          )}
+                          <p className="text-xs text-on-surface-variant mt-2">Upload an image file (JPG, PNG, etc.)</p>
+                        </div>
+                        <div className="flex gap-4 pt-4">
+                          <button
+                            type="submit"
+                            className="flex-1 px-6 py-3 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest hover:bg-transparent hover:text-primary border border-primary transition-all duration-300"
+                          >
+                            {editingProduct ? 'Update Product' : 'Add Product'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowAddProduct(false)
+                              setEditingProduct(null)
+                              setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                            }}
+                            className="px-6 py-3 border border-outline-variant/30 text-on-surface-variant font-label-caps text-label-caps tracking-widest hover:border-primary hover:text-primary transition-all duration-300"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 )}
