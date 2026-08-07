@@ -123,7 +123,7 @@ function Home() {
                 <span className="font-label-caps text-label-caps text-on-surface-variant block mb-4">JUST REVEALED</span>
                 <h2 className="font-headline-md text-headline-md">Best Sellers</h2>
               </div>
-              <a className="font-label-caps text-label-caps border-b border-primary pb-1" href="#">VIEW ALL</a>
+              <Link className="font-label-caps text-label-caps border-b border-primary pb-1" to="/shop">VIEW ALL</Link>
             </div>
             <div className="flex overflow-x-auto gap-gutter px-6 md:px-margin-desktop no-scrollbar pb-8">
               {/* Scroll Items */}

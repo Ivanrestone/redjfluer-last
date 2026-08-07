@@ -5,14 +5,18 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 
 // Import models
 const Message = require('./models/Message');
 const Order = require('./models/Order');
 const Account = require('./models/Account');
+const Admin = require('./models/Admin');
+const Product = require('./models/Product');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -81,7 +85,7 @@ const upload = multer({
   }
 });
 
-// Upload endpoint
+// Upload endpoint (single image)
 app.post('/api/upload', upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
@@ -102,9 +106,242 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
   }
 });
 
+// Multiple images upload endpoint
+app.post('/api/upload-multiple', upload.array('images', 3), (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No files uploaded' });
+    }
+
+    const category = req.body.category || 'Bouquets';
+    const captions = req.body.captions ? JSON.parse(req.body.captions) : [];
+
+    const uploadedImages = req.files.map((file, index) => ({
+      imagePath: `/${category}/${file.filename}`,
+      filename: file.filename,
+      caption: captions[index] || ''
+    }));
+
+    res.json({
+      success: true,
+      images: uploadedImages
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: 'Upload failed' });
+  }
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// ==================== ADMIN AUTHENTICATION API ====================
+
+// Register admin
+app.post('/api/admin/register', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+
+    // Check if admin already exists
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ error: 'Admin with this email already exists' });
+    }
+
+    const admin = new Admin({ email, password, name });
+    await admin.save();
+
+    // Generate token
+    const token = jwt.sign({ adminId: admin._id }, JWT_SECRET, { expiresIn: '24h' });
+
+    res.status(201).json({
+      token,
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        name: admin.name
+      }
+    });
+  } catch (error) {
+    console.error('Error registering admin:', error);
+    res.status(500).json({ error: 'Failed to register admin' });
+  }
+});
+
+// Login admin
+app.post('/api/admin/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const isMatch = await admin.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ adminId: admin._id }, JWT_SECRET, { expiresIn: '24h' });
+
+    res.json({
+      token,
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        name: admin.name
+      }
+    });
+  } catch (error) {
+    console.error('Error logging in admin:', error);
+    res.status(500).json({ error: 'Failed to login' });
+  }
+});
+
+// Middleware to verify admin token
+const verifyAdminToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.adminId = decoded.adminId;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+};
+
+// ==================== PRODUCTS API ====================
+
+// Get all products
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
+// Get product by ID
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    res.status(500).json({ error: 'Failed to fetch product' });
+  }
+});
+
+// Create product (admin only)
+app.post('/api/products', verifyAdminToken, async (req, res) => {
+  try {
+    const product = new Product(req.body);
+    await product.save();
+    res.status(201).json(product);
+  } catch (error) {
+    console.error('Error creating product:', error);
+    res.status(500).json({ error: 'Failed to create product' });
+  }
+});
+
+// Update product (admin only)
+app.patch('/api/products/:id', verifyAdminToken, async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body, updatedAt: Date.now() },
+      { new: true }
+    );
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(product);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+
+// Delete product (admin only)
+app.delete('/api/products/:id', verifyAdminToken, async (req, res) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
+
+// ==================== ANALYTICS API ====================
+
+// Get dashboard analytics
+app.get('/api/analytics', verifyAdminToken, async (req, res) => {
+  try {
+    const totalSales = await Order.aggregate([
+      { $match: { status: { $ne: 'Cancelled' } } },
+      { $group: { _id: null, total: { $sum: '$total' } } }
+    ]);
+
+    const totalOrders = await Order.countDocuments();
+    const newCustomers = await Account.countDocuments({
+      createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
+    });
+
+    // Get top performer (product with most units sold)
+    const topPerformer = await Product.findOne().sort({ unitsSold: -1 });
+
+    res.json({
+      totalSales: totalSales[0]?.total || 0,
+      totalOrders,
+      newCustomers,
+      topPerformer
+    });
+  } catch (error) {
+    console.error('Error fetching analytics:', error);
+    res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+});
+
+// Get recent orders
+app.get('/api/orders/recent', verifyAdminToken, async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate('items');
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching recent orders:', error);
+    res.status(500).json({ error: 'Failed to fetch recent orders' });
+  }
+});
+
+// Get all customers
+app.get('/api/customers', verifyAdminToken, async (req, res) => {
+  try {
+    const customers = await Account.find().sort({ createdAt: -1 });
+    res.json(customers);
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res.status(500).json({ error: 'Failed to fetch customers' });
+  }
 });
 
 // ==================== MESSAGES API ====================

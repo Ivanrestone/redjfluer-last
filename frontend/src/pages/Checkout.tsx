@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useCart } from '../context/CartContext'
 import Header from '../components/Header'
 
@@ -9,8 +9,8 @@ function Checkout() {
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [formData, setFormData] = useState({
     email: '',
-    recipientFirstName: '',
-    recipientLastName: '',
+    recipientName: '',
+    phone: '',
     deliveryAddress: '',
     city: '',
     state: '',
@@ -86,7 +86,8 @@ function Checkout() {
     const body = encodeURIComponent(
       `Order Details:\n\n` +
       `Email: ${formData.email}\n` +
-      `Recipient Name: ${formData.recipientFirstName} ${formData.recipientLastName}\n` +
+      `Recipient Name: ${formData.recipientName}\n` +
+      `Phone: ${formData.phone}\n` +
       `Delivery Address: ${formData.deliveryAddress}\n` +
       `City: ${formData.city}\n` +
       `State: ${formData.state}\n` +
@@ -119,13 +120,24 @@ function Checkout() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="relative">
-                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Email Address</label>
-                  <input 
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
-                    placeholder="email@example.com" 
+                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Email Address *</label>
+                  <input
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    placeholder="email@example.com"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className="relative">
+                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Phone Number (Optional)</label>
+                  <input
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    placeholder="+1 (555) 000-0000"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   />
                 </div>
                 <div className="flex items-center gap-3 pt-6">
@@ -139,29 +151,20 @@ function Checkout() {
             <section>
               <h2 className="font-label-caps text-label-caps uppercase mb-8">2. Delivery Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
-                <div className="relative">
-                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient First Name</label>
-                  <input 
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
+                <div className="md:col-span-2 relative">
+                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient Name</label>
+                  <input
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
                     type="text"
-                    value={formData.recipientFirstName}
-                    onChange={(e) => setFormData({...formData, recipientFirstName: e.target.value})}
-                  />
-                </div>
-                <div className="relative">
-                  <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient Last Name</label>
-                  <input 
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
-                    type="text"
-                    value={formData.recipientLastName}
-                    onChange={(e) => setFormData({...formData, recipientLastName: e.target.value})}
+                    value={formData.recipientName}
+                    onChange={(e) => setFormData({...formData, recipientName: e.target.value})}
                   />
                 </div>
                 <div className="md:col-span-2 relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Delivery Address</label>
-                  <input 
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
-                    placeholder="Street, Apt, Floor" 
+                  <input
+                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    placeholder="Street, Apt, Floor"
                     type="text"
                     value={formData.deliveryAddress}
                     onChange={(e) => setFormData({...formData, deliveryAddress: e.target.value})}

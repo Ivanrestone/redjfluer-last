@@ -1,73 +1,161 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function Admin() {
+  const navigate = useNavigate()
   const [activeNav, setActiveNav] = useState('analytics')
   const [selectedOrder, setSelectedOrder] = useState<any>(null)
   const [showAddProduct, setShowAddProduct] = useState(false)
   const [products, setProducts] = useState<any[]>([])
   const [editingProduct, setEditingProduct] = useState<any>(null)
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [recentOrders, setRecentOrders] = useState<any[]>([])
+  const [customers, setCustomers] = useState<any[]>([])
+  const [adminInfo, setAdminInfo] = useState<any>(null)
+
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken')
+    const admin = localStorage.getItem('adminInfo')
+    if (!token) {
+      navigate('/admin/login')
+    } else {
+      setAdminInfo(JSON.parse(admin || '{}'))
+      fetchAnalytics()
+      fetchRecentOrders()
+      fetchCustomers()
+      fetchProducts()
+    }
+  }, [navigate])
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken')
+    localStorage.removeItem('adminInfo')
+    navigate('/admin/login')
+  }
+
+  const fetchAnalytics = async () => {
+    const token = localStorage.getItem('adminToken')
+    try {
+      const response = await fetch('http://localhost:3001/api/analytics', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      setAnalytics(data)
+    } catch (error) {
+      console.error('Error fetching analytics:', error)
+    }
+  }
+
+  const fetchRecentOrders = async () => {
+    const token = localStorage.getItem('adminToken')
+    try {
+      const response = await fetch('http://localhost:3001/api/orders/recent', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      setRecentOrders(data)
+    } catch (error) {
+      console.error('Error fetching recent orders:', error)
+    }
+  }
+
+  const fetchCustomers = async () => {
+    const token = localStorage.getItem('adminToken')
+    try {
+      const response = await fetch('http://localhost:3001/api/customers', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      setCustomers(data)
+    } catch (error) {
+      console.error('Error fetching customers:', error)
+    }
+  }
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/products')
+      const data = await response.json()
+      setProducts(data)
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      // Fallback to localStorage if API fails
+      const savedProducts = localStorage.getItem('products')
+      if (savedProducts) {
+        setProducts(JSON.parse(savedProducts))
+      }
+    }
+  }
 
   const [productForm, setProductForm] = useState({
     name: '',
     price: '',
     category: 'Bouquets',
     description: '',
-    image: null as File | null,
-    imagePreview: ''
+    images: [null, null, null] as (File | null)[],
+    imagePreviews: ['', '', ''],
+    captions: ['', '', '']
   })
 
-  useEffect(() => {
-    const savedProducts = localStorage.getItem('products')
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts))
-    }
-  }, [])
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (index: number) => (e: any) => {
     const file = e.target.files?.[0]
     if (file) {
-      setProductForm({ ...productForm, image: file, imagePreview: URL.createObjectURL(file) })
+      const newImages = [...productForm.images]
+      const newPreviews = [...productForm.imagePreviews]
+      newImages[index] = file
+      newPreviews[index] = URL.createObjectURL(file)
+      setProductForm({ ...productForm, images: newImages, imagePreviews: newPreviews })
     }
+  }
+
+  const handleCaptionChange = (index: number) => (e: any) => {
+    const newCaptions = [...productForm.captions]
+    newCaptions[index] = e.target.value
+    setProductForm({ ...productForm, captions: newCaptions })
   }
 
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    let imageUrl = productForm.imagePreview
+    let imageUrls = productForm.imagePreviews.filter(p => p !== '')
 
-    // If there's a new image file, upload it to the backend
-    if (productForm.image) {
+    // If there are new image files, upload them to the backend
+    const newImages = productForm.images.filter(img => img !== null)
+    if (newImages.length > 0) {
       const formData = new FormData()
-      formData.append('image', productForm.image)
+      newImages.forEach((image) => {
+        formData.append('images', image)
+      })
       formData.append('category', productForm.category)
+      formData.append('captions', JSON.stringify(productForm.captions))
 
       try {
-        const response = await fetch('http://localhost:3001/api/upload', {
+        const response = await fetch('http://localhost:3001/api/upload-multiple', {
           method: 'POST',
           body: formData
         })
 
         const data = await response.json()
         if (data.success) {
-          imageUrl = data.imagePath
-        } else {
-          console.error('Upload failed:', data.error)
-          // Fallback to default if upload fails
-          imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
+          imageUrls = data.images.map((img: any) => img.imagePath)
         }
       } catch (error) {
         console.error('Upload error:', error)
-        // Fallback to default if upload fails
-        imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
       }
-    } else if (editingProduct) {
-      // If editing and no new image uploaded, keep the existing image
-      imageUrl = editingProduct.images[0]
+    } else if (editingProduct && editingProduct.images) {
+      // If editing and no new images uploaded, keep the existing images
+      imageUrls = editingProduct.images
     }
 
-    // If no image at all, use default
-    if (!imageUrl) {
-      imageUrl = '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'
+    // If no images at all, use default
+    if (imageUrls.length === 0) {
+      imageUrls = ['/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg']
     }
 
     const newProduct = {
@@ -76,7 +164,8 @@ function Admin() {
       price: parseFloat(productForm.price),
       category: productForm.category,
       description: productForm.description,
-      images: [imageUrl]
+      images: imageUrls,
+      captions: productForm.captions
     }
 
     if (editingProduct) {
@@ -88,7 +177,7 @@ function Admin() {
 
     localStorage.setItem('products', JSON.stringify(editingProduct ? products.map(p => p.id === editingProduct.id ? newProduct : p) : [...products, newProduct]))
     setShowAddProduct(false)
-    setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+    setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
   }
 
   const handleDeleteProduct = (id: number) => {
@@ -103,8 +192,9 @@ function Admin() {
       price: product.price.toString(),
       category: product.category,
       description: product.description,
-      image: null,
-      imagePreview: product.images[0] || ''
+      images: [null, null, null],
+      imagePreviews: product.images || [''],
+      captions: product.captions || ['', '', '']
     })
     setShowAddProduct(true)
   }
@@ -117,15 +207,6 @@ function Admin() {
     { id: 'discounts', label: 'Discounts', icon: 'sell' },
   ]
 
-  const orders = [
-    { id: '#FL-8921', customer: 'Eleanor Vance', email: 'eleanor@example.com', product: 'Velvet Orchid Bouquet', amount: '$185.00', status: 'Delivered', date: 'Oct 20, 2026', address: '123 Garden Lane, NY 10001' },
-    { id: '#FL-8922', customer: 'Julien Sorel', email: 'julien@example.com', product: 'Arctic Lily Minimalist', amount: '$120.00', status: 'Shipped', date: 'Oct 21, 2026', address: '456 Rose Avenue, NY 10002' },
-    { id: '#FL-8923', customer: 'Clarissa Dalloway', email: 'clarissa@example.com', product: 'The Royal Garden Box', amount: '$350.00', status: 'Pending', date: 'Oct 22, 2026', address: '789 Blossom Street, NY 10003' },
-    { id: '#FL-8924', customer: 'Elizabeth Bennet', email: 'elizabeth@example.com', product: 'Midnight Rose Bouquet', amount: '$145.00', status: 'Processing', date: 'Oct 22, 2026', address: '321 Pride Road, NY 10004' },
-    { id: '#FL-8925', customer: 'Mr. Darcy', email: 'darcy@example.com', product: 'Pastel Dreams', amount: '$135.00', status: 'Pending', date: 'Oct 23, 2026', address: '654 Pemberley Way, NY 10005' },
-  ]
-
-  const recentOrders = orders.slice(0, 3)
 
   return (
     <div className="bg-surface text-on-surface font-body-md overflow-hidden">
@@ -178,7 +259,13 @@ function Admin() {
             </div>
             <div className="flex items-center gap-6">
               <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
-              <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+              <button
+                onClick={handleLogout}
+                className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors"
+                title="Logout"
+              >
+                logout
+              </button>
             </div>
           </header>
 
@@ -210,8 +297,8 @@ function Admin() {
                       <span className="material-symbols-outlined text-primary">trending_up</span>
                     </div>
                     <div>
-                      <p className="font-headline-md text-headline-md text-primary">$42,930.50</p>
-                      <p className="text-xs text-on-tertiary-container mt-1">+12.5% from last month</p>
+                      <p className="font-headline-md text-headline-md text-primary">${analytics?.totalSales?.toFixed(2) || '0.00'}</p>
+                      <p className="text-xs text-on-tertiary-container mt-1">Total revenue</p>
                     </div>
                   </div>
                   <div className="p-8 bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between h-48 group hover:border-primary transition-all">
@@ -220,8 +307,8 @@ function Admin() {
                       <span className="material-symbols-outlined text-primary">inventory_2</span>
                     </div>
                     <div>
-                      <p className="font-headline-md text-headline-md text-primary">843</p>
-                      <p className="text-xs text-on-tertiary-container mt-1">12 pending shipments</p>
+                      <p className="font-headline-md text-headline-md text-primary">{analytics?.totalOrders || 0}</p>
+                      <p className="text-xs text-on-tertiary-container mt-1">All time orders</p>
                     </div>
                   </div>
                   <div className="p-8 bg-surface-container-low border border-outline-variant/30 flex flex-col justify-between h-48 group hover:border-primary transition-all">
@@ -230,8 +317,8 @@ function Admin() {
                       <span className="material-symbols-outlined text-primary">person_add</span>
                     </div>
                     <div>
-                      <p className="font-headline-md text-headline-md text-primary">156</p>
-                      <p className="text-xs text-on-tertiary-container mt-1">+48 this week</p>
+                      <p className="font-headline-md text-headline-md text-primary">{analytics?.newCustomers || 0}</p>
+                      <p className="text-xs text-on-tertiary-container mt-1">Last 30 days</p>
                     </div>
                   </div>
                 </section>
@@ -274,15 +361,19 @@ function Admin() {
                     </div>
                     <div className="p-8 border border-outline-variant/30 hover:border-primary transition-all">
                       <h4 className="font-label-caps text-label-caps tracking-widest mb-4">Top Performer</h4>
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-20 bg-surface-container-high relative overflow-hidden">
-                          <img className="object-cover w-full h-full" alt="Midnight Rose" src="/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg" />
+                      {analytics?.topPerformer ? (
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-20 bg-surface-container-high relative overflow-hidden">
+                            <img className="object-cover w-full h-full" alt={analytics.topPerformer.name} src={analytics.topPerformer.images?.[0] || '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'} />
+                          </div>
+                          <div>
+                            <p className="font-headline-sm text-lg leading-tight mb-1">{analytics.topPerformer.name}</p>
+                            <p className="text-xs text-on-surface-variant">{analytics.topPerformer.unitsSold || 0} units sold</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-headline-sm text-lg leading-tight mb-1">Midnight Rose</p>
-                          <p className="text-xs text-on-surface-variant">124 units sold this week</p>
-                        </div>
-                      </div>
+                      ) : (
+                        <p className="text-xs text-on-surface-variant">No sales data yet</p>
+                      )}
                     </div>
                   </div>
                 </section>
@@ -373,21 +464,21 @@ function Admin() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-outline-variant/20">
-                        {orders.map((order, index) => (
+                        {recentOrders.map((order, index) => (
                           <tr key={index} className="hover:bg-surface-container-lowest transition-colors group">
-                            <td className="px-8 py-6 font-body-md text-primary font-semibold">{order.id}</td>
+                            <td className="px-8 py-6 font-body-md text-primary font-semibold">{order._id}</td>
                             <td className="px-8 py-6">
-                              <p className="font-body-md">{order.customer}</p>
-                              <p className="text-xs text-on-surface-variant">{order.email}</p>
+                              <p className="font-body-md">{order.customerName}</p>
+                              <p className="text-xs text-on-surface-variant">{order.customerEmail}</p>
                             </td>
-                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{order.product}</td>
-                            <td className="px-8 py-6 font-body-md font-semibold">{order.amount}</td>
-                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{order.date}</td>
+                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{order.items?.[0]?.name || 'N/A'}</td>
+                            <td className="px-8 py-6 font-body-md font-semibold">${order.total?.toFixed(2) || '0.00'}</td>
+                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{new Date(order.createdAt).toLocaleDateString()}</td>
                             <td className="px-8 py-6">
                               <select
                                 value={order.status}
                                 onChange={(e) => {
-                                  const newOrders = [...orders]
+                                  const newOrders = [...recentOrders]
                                   newOrders[index].status = e.target.value
                                 }}
                                 className={`px-3 py-1 text-[9px] font-label-caps tracking-widest uppercase border-none focus:ring-0 cursor-pointer ${
@@ -407,7 +498,7 @@ function Admin() {
                               </select>
                             </td>
                             <td className="px-8 py-6">
-                              <button 
+                              <button
                                 onClick={() => setSelectedOrder(order)}
                                 className="material-symbols-outlined text-outline hover:text-primary transition-colors"
                               >
@@ -499,7 +590,7 @@ function Admin() {
                   <button
                     onClick={() => {
                       setEditingProduct(null)
-                      setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                      setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
                       setShowAddProduct(true)
                     }}
                     className="px-6 py-3 bg-primary text-on-primary font-label-caps text-label-caps tracking-widest hover:bg-transparent hover:text-primary border border-primary transition-all duration-300"
@@ -611,23 +702,34 @@ function Admin() {
                           />
                         </div>
                         <div>
-                          <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Product Image</label>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageUpload}
-                            className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
-                          />
-                          {productForm.imagePreview && (
-                            <div className="mt-4">
-                              <img
-                                src={productForm.imagePreview}
-                                alt="Preview"
-                                className="w-32 h-32 object-cover rounded-lg border border-outline-variant/30"
+                          <label className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2 block">Product Images (up to 3)</label>
+                          {[0, 1, 2].map((index) => (
+                            <div key={index} className="mb-4 p-4 border border-outline-variant/30 rounded-lg">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleImageUpload(index)(e)}
+                                className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-3 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
                               />
+                              <input
+                                type="text"
+                                placeholder={`Image ${index + 1} caption`}
+                                value={productForm.captions[index]}
+                                onChange={(e) => handleCaptionChange(index)(e)}
+                                className="w-full bg-surface-container-low border border-outline-variant/30 px-4 py-2 font-body-md focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all mb-2"
+                              />
+                              {productForm.imagePreviews[index] && (
+                                <div className="mt-2">
+                                  <img
+                                    src={productForm.imagePreviews[index]}
+                                    alt={`Preview ${index + 1}`}
+                                    className="w-24 h-24 object-cover rounded-lg border border-outline-variant/30"
+                                  />
+                                </div>
+                              )}
                             </div>
-                          )}
-                          <p className="text-xs text-on-surface-variant mt-2">Upload an image file (JPG, PNG, etc.)</p>
+                          ))}
+                          <p className="text-xs text-on-surface-variant mt-2">Upload up to 3 image files (JPG, PNG, etc.) with optional captions</p>
                         </div>
                         <div className="flex gap-4 pt-4">
                           <button
@@ -641,7 +743,7 @@ function Admin() {
                             onClick={() => {
                               setShowAddProduct(false)
                               setEditingProduct(null)
-                              setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                              setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
                             }}
                             className="px-6 py-3 border border-outline-variant/30 text-on-surface-variant font-label-caps text-label-caps tracking-widest hover:border-primary hover:text-primary transition-all duration-300"
                           >
@@ -652,6 +754,50 @@ function Admin() {
                     </div>
                   </div>
                 )}
+              </>
+            ) : activeNav === 'customers' ? (
+              <>
+                {/* Customers View */}
+                <section className="flex flex-col md:flex-row justify-between items-end gap-6">
+                  <div>
+                    <h2 className="font-headline-md text-headline-md text-primary">Customer Groups</h2>
+                    <p className="font-body-md text-on-surface-variant">View and manage customer information.</p>
+                  </div>
+                </section>
+
+                {/* Customers Table */}
+                <section className="border border-outline-variant/30 bg-surface-container-low overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead className="bg-surface-container-highest">
+                        <tr>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Name</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Email</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Phone</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Address</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Joined Date</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-outline-variant/20">
+                        {customers.length > 0 ? (
+                          customers.map((customer, index) => (
+                            <tr key={index} className="hover:bg-surface-container-lowest transition-colors">
+                              <td className="px-8 py-6 font-body-md font-semibold">{customer.name}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.email}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.phone || 'N/A'}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.address || 'N/A'}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{new Date(customer.createdAt).toLocaleDateString()}</td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={5} className="px-8 py-12 text-center text-on-surface-variant">No customers yet</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </section>
               </>
             ) : (
               <div className="text-center py-20">
