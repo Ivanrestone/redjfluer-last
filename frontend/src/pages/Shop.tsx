@@ -7,7 +7,7 @@ import Header from '../components/Header'
 function Shop() {
   const [searchParams] = useSearchParams()
   const [selectedCategory, setSelectedCategory] = useState('All Collections')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery] = useState('')
   const [sortBy, setSortBy] = useState('Newest')
   const { addToCart } = useCart()
 

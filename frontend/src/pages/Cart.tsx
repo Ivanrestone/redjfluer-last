@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import Header from '../components/Header'
-import { useState } from 'react'
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart()
-  const [giftMessage, setGiftMessage] = useState('')
-  const [promoCode, setPromoCode] = useState('')
 
   const handleUpdateQuantity = (id: number, change: number) => {
     const item = cartItems.find(i => i.id === id)

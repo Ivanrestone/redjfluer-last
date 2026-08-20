@@ -188,11 +188,6 @@ function Product() {
   const productImages = product.images || (product.image ? [product.image] : ['/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'])
 
   const sizes = ['Classic', 'Grand', 'Luxe']
-  const reviews = [
-    { name: 'Julianne R.', rating: 5, text: 'The presentation was breathtaking. It felt more like receiving a piece of art than a bouquet.' },
-    { name: 'Marc A.', rating: 5, text: 'Exceeded all expectations. The scent filled my entire apartment for days. Pure luxury.' },
-    { name: 'Sophia W.', rating: 5, text: 'The delivery was on time and the box was in pristine condition. Worth every penny.' },
-  ]
 
   const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4)
 
@@ -219,7 +214,7 @@ function Product() {
             </div>
             {/* Thumbnails */}
             <div className="flex md:flex-col gap-4 overflow-x-auto no-scrollbar md:w-32">
-              {productImages.map((img, idx) => (
+              {productImages.map((img: string, idx: number) => (
                 <div 
                   key={idx}
                   onClick={() => setSelectedImage(idx)}

@@ -11,7 +11,6 @@ function Admin() {
   const [analytics, setAnalytics] = useState<any>(null)
   const [recentOrders, setRecentOrders] = useState<any[]>([])
   const [customers, setCustomers] = useState<any[]>([])
-  const [adminInfo, setAdminInfo] = useState<any>(null)
   const [availableImages, setAvailableImages] = useState<any[]>([])
   const [useExistingImages, setUseExistingImages] = useState(false)
 
@@ -21,7 +20,7 @@ function Admin() {
     if (!token) {
       navigate('/admin/login')
     } else {
-      setAdminInfo(JSON.parse(admin || '{}'))
+      JSON.parse(admin || '{}')
       fetchAnalytics()
       fetchRecentOrders()
       fetchCustomers()
@@ -758,7 +757,7 @@ function Admin() {
                           onClick={() => {
                             setShowAddProduct(false)
                             setEditingProduct(null)
-                            setProductForm({ name: '', price: '', category: 'Bouquets', description: '', image: null, imagePreview: '' })
+                            setProductForm({ name: '', price: '', category: 'Bouquets', description: '', images: [null, null, null], imagePreviews: ['', '', ''], captions: ['', '', ''] })
                           }}
                           className="material-symbols-outlined text-outline hover:text-primary"
                         >
