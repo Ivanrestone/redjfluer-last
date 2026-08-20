@@ -293,10 +293,10 @@ function Home() {
                 Elevating the language of flowers through artisanal curation and mindful design.
               </p>
               <div className="flex gap-4">
-                <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="#">
+                <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="https://redjfluer.com" target="_blank" rel="noopener noreferrer">
                   <span className="material-symbols-outlined">public</span>
                 </a>
-                <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="#">
+                <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="mailto:rrickzzz07@gmail.com">
                   <span className="material-symbols-outlined">alternate_email</span>
                 </a>
               </div>
