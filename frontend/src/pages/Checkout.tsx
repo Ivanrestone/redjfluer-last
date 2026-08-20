@@ -66,41 +66,71 @@ function Checkout() {
 
   const subtotal = getCartTotal()
   const deliveryFee = 15.00
-  const taxes = subtotal * 0.08
+  const taxes = 0
   const total = subtotal + deliveryFee + taxes
 
-  const handlePlaceOrder = () => {
-    // Send order details as email/message
-    const orderDetails = {
-      ...formData,
-      deliveryDate: selectedDate ? formatDate(selectedDate) : 'Not selected',
-      items: cartItems,
-      total: total.toFixed(2)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [orderSuccess, setOrderSuccess] = useState(false)
+  const [orderId, setOrderId] = useState<string | null>(null)
+  const [orderSummary, setOrderSummary] = useState({ subtotal: 0, deliveryFee: 0, taxes: 0, total: 0 })
+
+  const handlePlaceOrder = async () => {
+    // Validate required fields
+    if (!formData.email || !formData.recipientName || !formData.deliveryAddress || !selectedDate) {
+      alert('Please fill in all required fields and select a delivery date')
+      return
     }
 
-    // For now, log to console - you can integrate email service later
-    console.log('Order Details:', orderDetails)
+    setIsSubmitting(true)
 
-    // Create mailto link for user to send order
-    const subject = encodeURIComponent('New Order -  RedJFluer')
-    const body = encodeURIComponent(
-      `Order Details:\n\n` +
-      `Email: ${formData.email}\n` +
-      `Recipient Name: ${formData.recipientName}\n` +
-      `Phone: ${formData.phone}\n` +
-      `Delivery Address: ${formData.deliveryAddress}\n` +
-      `City: ${formData.city}\n` +
-      `State: ${formData.state}\n` +
-      `Zip Code: ${formData.zipCode}\n` +
-      `Delivery Date: ${selectedDate ? formatDate(selectedDate) : 'Not selected'}\n` +
-      `Message: ${formData.message}\n\n` +
-      `Items:\n${cartItems.map(item => `- ${item.name} (${item.size}) x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`).join('\n')}\n\n` +
-      `Total: $${total.toFixed(2)}`
-    )
+    const orderData = {
+      customerName: formData.recipientName,
+      customerEmail: formData.email,
+      customerPhone: formData.phone,
+      deliveryAddress: formData.deliveryAddress,
+      city: formData.city,
+      state: formData.state,
+      zipCode: formData.zipCode,
+      deliveryDate: selectedDate ? formatDate(selectedDate) : 'Not selected',
+      additionalMessage: formData.message,
+      items: cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        size: item.size,
+        price: item.price,
+        image: item.image,
+        quantity: item.quantity
+      })),
+      subtotal,
+      deliveryFee,
+      total
+    }
 
-    window.location.href = `mailto:your-email@example.com?subject=${subject}&body=${body}`
+    try {
+      const response = await fetch('http://localhost:3001/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      })
 
-    clearCart()
+      const data = await response.json()
+
+      if (response.ok) {
+        setOrderId(data.orderId)
+        setOrderSummary({ subtotal, deliveryFee, taxes, total })
+        setOrderSuccess(true)
+        clearCart()
+      } else {
+        alert('Failed to place order. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error placing order:', error)
+      alert('Failed to place order. Please check your connection and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -108,21 +138,96 @@ function Checkout() {
       <Header />
       <main className="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-desktop">
 
+        {/* Order Success / Receipt */}
+        {orderSuccess ? (
+          <div className="max-w-md mx-auto">
+            <div className="bg-surface-container-low p-4 border border-outline-variant/30 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="material-symbols-outlined text-primary text-2xl">check_circle</span>
+              </div>
+              <h2 className="font-body-sm font-semibold text-primary mb-2">Order Placed Successfully!</h2>
+              <p className="text-xs text-on-surface-variant mb-4">
+                Thank you for your order. We've received your request and will begin processing it shortly.
+              </p>
+
+              {/* Order Receipt */}
+              <div className="bg-surface p-3 border border-outline-variant/20 text-left mb-4">
+                <h3 className="text-[10px] font-label-caps uppercase mb-3 text-primary">Order Receipt</h3>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-[10px] text-on-surface-variant">Order ID:</span>
+                    <span className="text-xs font-medium">{orderId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[10px] text-on-surface-variant">Customer Email:</span>
+                    <span className="text-xs font-medium">{formData.email}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[10px] text-on-surface-variant">Recipient:</span>
+                    <span className="text-xs font-medium">{formData.recipientName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[10px] text-on-surface-variant">Delivery Date:</span>
+                    <span className="text-xs font-medium">{selectedDate ? formatDate(selectedDate) : 'Not selected'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[10px] text-on-surface-variant">Delivery Address:</span>
+                    <span className="text-xs font-medium text-right max-w-xs">
+                      {formData.deliveryAddress}, {formData.city}, {formData.state} {formData.zipCode}
+                    </span>
+                  </div>
+                  <div className="border-t border-outline-variant/30 pt-2 mt-2">
+                    <div className="flex justify-between">
+                      <span className="text-[10px] text-on-surface-variant">Subtotal:</span>
+                      <span className="text-xs">${orderSummary.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[10px] text-on-surface-variant">Delivery Fee:</span>
+                      <span className="text-xs">${orderSummary.deliveryFee.toFixed(2)}</span>
+                    </div>
+                    {orderSummary.taxes > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-[10px] text-on-surface-variant">Taxes:</span>
+                        <span className="text-xs">${orderSummary.taxes.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between font-semibold text-primary mt-1 pt-1 border-t border-primary/50">
+                      <span className="text-xs">Total:</span>
+                      <span className="text-sm">${orderSummary.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-[10px] text-on-surface-variant">
+                  A confirmation email has been sent to <span className="font-medium">{formData.email}</span>
+                </p>
+                <Link
+                  to="/"
+                  className="inline-block px-4 py-2 bg-primary text-on-primary font-label-caps uppercase tracking-[0.2em] hover:bg-transparent hover:text-primary border border-primary transition-all duration-300 text-xs"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
           {/* Left Column: Checkout Details */}
-          <div className="lg:col-span-8 space-y-12">
+          <div className="lg:col-span-8 space-y-6">
             {/* Section 1: Customer Information */}
             <section>
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex justify-between items-center mb-4">
                 <h2 className="font-label-caps text-label-caps uppercase">1. Customer Information</h2>
                 <button className="text-[11px] underline font-label-caps hover:text-secondary-fixed-dim transition-colors">Log In for Faster Checkout</button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Email Address *</label>
                   <input
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none"
                     placeholder="email@example.com"
                     type="email"
                     value={formData.email}
@@ -133,14 +238,14 @@ function Checkout() {
                 <div className="relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Phone Number (Optional)</label>
                   <input
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none"
                     placeholder="+1 (555) 000-0000"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                   />
                 </div>
-                <div className="flex items-center gap-3 pt-6">
+                <div className="flex items-center gap-2 pt-2">
                   <input className="w-4 h-4 rounded-none border-primary focus:ring-0" id="newsletter" type="checkbox"/>
                   <label className="text-body-md text-on-surface-variant" htmlFor="newsletter">Keep me updated on seasonal blooms</label>
                 </div>
@@ -149,12 +254,12 @@ function Checkout() {
 
             {/* Section 2: Delivery Details */}
             <section>
-              <h2 className="font-label-caps text-label-caps uppercase mb-8">2. Delivery Details</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+              <h2 className="font-label-caps text-label-caps uppercase mb-4">2. Delivery Details</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
                 <div className="md:col-span-2 relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Recipient Name</label>
                   <input
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none"
                     type="text"
                     value={formData.recipientName}
                     onChange={(e) => setFormData({...formData, recipientName: e.target.value})}
@@ -163,7 +268,7 @@ function Checkout() {
                 <div className="md:col-span-2 relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Delivery Address</label>
                   <input
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none"
+                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none"
                     placeholder="Street, Apt, Floor"
                     type="text"
                     value={formData.deliveryAddress}
@@ -173,7 +278,7 @@ function Checkout() {
                 <div className="relative">
                   <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">City</label>
                   <input 
-                    className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
+                    className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
                     type="text"
                     value={formData.city}
                     onChange={(e) => setFormData({...formData, city: e.target.value})}
@@ -183,7 +288,7 @@ function Checkout() {
                   <div className="relative">
                     <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">State</label>
                     <input 
-                      className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
+                      className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
                       type="text"
                       value={formData.state}
                       onChange={(e) => setFormData({...formData, state: e.target.value})}
@@ -192,7 +297,7 @@ function Checkout() {
                   <div className="relative">
                     <label className="font-label-caps text-[10px] uppercase text-on-surface-variant">Zip Code</label>
                     <input 
-                      className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none" 
+                      className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none" 
                       type="text"
                       value={formData.zipCode}
                       onChange={(e) => setFormData({...formData, zipCode: e.target.value})}
@@ -204,19 +309,19 @@ function Checkout() {
 
             {/* Section 3: Delivery Date Selection */}
             <section>
-              <h2 className="font-label-caps text-label-caps uppercase mb-8">3. Select Delivery Date</h2>
-              <div className="bg-surface-container-low p-8 border border-outline-variant/20">
-                <div className="flex items-center gap-4 mb-6">
+              <h2 className="font-label-caps text-label-caps uppercase mb-4">3. Select Delivery Date</h2>
+              <div className="bg-surface-container-low p-4 border border-outline-variant/20">
+                <div className="flex items-center gap-3 mb-4">
                   <span className="material-symbols-outlined text-primary">calendar_today</span>
                   <span className="font-body-md">Earliest delivery: {formatDate(earliestDelivery)}</span>
                 </div>
                 {/* Real Calendar Interface */}
-                <div className="border-t border-outline-variant/30 pt-6">
+                <div className="border-t border-outline-variant/30 pt-4">
                   {/* Month Navigation */}
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex justify-between items-center mb-4">
                     <button 
                       onClick={handlePreviousMonth}
-                      className="p-2 hover:bg-primary-fixed transition-colors"
+                      className="p-1 hover:bg-primary-fixed transition-colors"
                     >
                       <span className="material-symbols-outlined">chevron_left</span>
                     </button>
@@ -225,24 +330,24 @@ function Checkout() {
                     </h3>
                     <button 
                       onClick={handleNextMonth}
-                      className="p-2 hover:bg-primary-fixed transition-colors"
+                      className="p-1 hover:bg-primary-fixed transition-colors"
                     >
                       <span className="material-symbols-outlined">chevron_right</span>
                     </button>
                   </div>
                   {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-2 text-center">
+                  <div className="grid grid-cols-7 gap-1 text-center">
                     {/* Day Headers */}
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">S</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">M</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">T</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">W</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">T</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">F</div>
-                    <div className="text-[10px] font-label-caps opacity-50 py-2">S</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">S</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">M</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">T</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">W</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">T</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">F</div>
+                    <div className="text-[9px] font-label-caps opacity-50 py-1">S</div>
                     {/* Empty cells for days before first day of month */}
                     {[...Array(firstDayOfMonth)].map((_, i) => (
-                      <div key={`empty-${i}`} className="py-3"></div>
+                      <div key={`empty-${i}`} className="py-1"></div>
                     ))}
                     {/* Days of the month */}
                     {[...Array(daysInMonth)].map((_, i) => {
@@ -253,7 +358,7 @@ function Checkout() {
                         <div
                           key={day}
                           onClick={() => handleDateSelect(day)}
-                          className={`py-3 text-body-md cursor-pointer transition-colors ${
+                          className={`py-1.5 text-body-md cursor-pointer transition-colors ${
                             disabled 
                               ? 'text-outline opacity-20 cursor-not-allowed' 
                               : selected
@@ -268,7 +373,7 @@ function Checkout() {
                   </div>
                   {/* Selected Date Display */}
                   {selectedDate && (
-                    <div className="mt-6 pt-4 border-t border-outline-variant/30">
+                    <div className="mt-4 pt-3 border-t border-outline-variant/30">
                       <p className="font-body-md text-primary">
                         Selected: {formatDate(selectedDate)}
                       </p>
@@ -276,16 +381,16 @@ function Checkout() {
                   )}
                 </div>
               </div>
-              <p className="mt-4 text-[12px] italic text-on-surface-variant">Note: Same-day delivery cut-off is 11:00 AM EST.</p>
+              <p className="mt-3 text-[11px] italic text-on-surface-variant">Note: Same-day delivery cut-off is 11:00 AM EST.</p>
             </section>
 
             {/* Section 4: Additional Message */}
             <section>
-              <h2 className="font-label-caps text-label-caps uppercase mb-8">4. Additional Message (Optional)</h2>
-              <div className="bg-surface-container-low p-8 border border-outline-variant/20">
+              <h2 className="font-label-caps text-label-caps uppercase mb-4">4. Additional Message (Optional)</h2>
+              <div className="bg-surface-container-low p-4 border border-outline-variant/20">
                 <textarea 
-                  className="w-full border-b border-primary bg-transparent py-3 focus:ring-0 font-body-md outline-none resize-none" 
-                  rows={4}
+                  className="w-full border-b border-primary bg-transparent py-2 focus:ring-0 font-body-md outline-none resize-none" 
+                  rows={3}
                   placeholder="Any special requests or notes..."
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
@@ -339,17 +444,19 @@ function Checkout() {
               {/* CTA */}
               <button 
                 onClick={handlePlaceOrder}
-                className="w-full bg-primary text-on-primary py-4 font-label-caps uppercase tracking-[0.2em] hover:bg-transparent hover:text-primary border border-primary transition-all duration-300 group flex items-center justify-center gap-3 text-sm"
+                disabled={isSubmitting}
+                className="w-full bg-primary text-on-primary py-4 font-label-caps uppercase tracking-[0.2em] hover:bg-transparent hover:text-primary border border-primary transition-all duration-300 group flex items-center justify-center gap-3 text-sm disabled:opacity-50"
               >
-                Send Order
+                {isSubmitting ? 'Processing...' : 'Send Order'}
                 <span className="material-symbols-outlined transition-transform group-hover:translate-x-2 text-lg">send</span>
               </button>
               <p className="mt-4 text-[11px] text-center text-on-surface-variant opacity-70">
-                Order will be sent via email for processing
+                Order will be saved and sent to admin for processing
               </p>
             </div>
           </div>
         </div>
+        )}
       </main>
 
       {/* Footer */}

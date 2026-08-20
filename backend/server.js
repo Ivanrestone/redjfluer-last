@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 // Import models
 const Message = require('./models/Message');
@@ -17,6 +18,17 @@ const Product = require('./models/Product');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+
+// Email transporter configuration
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+  port: process.env.EMAIL_PORT || 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
+  }
+});
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
@@ -372,6 +384,302 @@ app.get('/api/images/:category', async (req, res) => {
   } catch (error) {
     console.error('Error fetching images:', error);
     res.status(500).json({ error: 'Failed to fetch images' });
+  }
+});
+
+// Create new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const {
+      customerName,
+      customerEmail,
+      customerPhone,
+      deliveryAddress,
+      city,
+      state,
+      zipCode,
+      deliveryDate,
+      additionalMessage,
+      items,
+      subtotal,
+      deliveryFee,
+      total
+    } = req.body;
+
+    const order = new Order({
+      customerName,
+      customerEmail,
+      customerPhone,
+      deliveryAddress: `${deliveryAddress}, ${city}, ${state} ${zipCode}`,
+      deliveryDate,
+      additionalMessage,
+      items,
+      subtotal,
+      deliveryFee,
+      total,
+      status: 'Pending'
+    });
+
+    await order.save();
+
+    // Update product units sold (try to find by ID or name)
+    for (const item of items) {
+      try {
+        // Try to find by MongoDB ObjectId first
+        await Product.findByIdAndUpdate(item.id, { $inc: { unitsSold: item.quantity } });
+      } catch (error) {
+        // If ID fails, try to find by name
+        await Product.findOneAndUpdate(
+          { name: item.name },
+          { $inc: { unitsSold: item.quantity } }
+        );
+      }
+    }
+
+    // Send order confirmation email to customer
+    try {
+      const itemsList = items.map(item =>
+        `- ${item.name} (${item.size}) x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
+      ).join('\n');
+
+      const customerMailOptions = {
+        from: process.env.EMAIL_FROM || 'RedJFluer <noreply@redjfluer.com>',
+        to: customerEmail,
+        subject: 'Order Confirmation - RedJFluer',
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 1px;">RedJFluer</h1>
+              <p style="color: #e0e0e0; margin: 8px 0 0; font-size: 16px; font-weight: 300;">Artistry in Bloom</p>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <h2 style="color: #333; font-size: 24px; margin: 0 0 10px; font-weight: 600;">Order Confirmation</h2>
+              <p style="color: #666; font-size: 15px; line-height: 1.6; margin: 0 0 30px;">Thank you for your order! We've received your request and will begin processing it shortly.</p>
+
+              <!-- Order Details -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #667eea;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Order Details</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px; width: 140px;">Order ID:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${order._id}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Customer:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${customerName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Email:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${customerEmail}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Delivery Date:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${deliveryDate}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px; vertical-align: top;">Delivery Address:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${deliveryAddress}, ${city}, ${state} ${zipCode}</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Items Ordered -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Items Ordered</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  ${items.map(item => `
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                      <td style="padding: 12px 0; color: #333; font-size: 14px; font-weight: 500;">${item.name} (${item.size})</td>
+                      <td style="padding: 12px 0; color: #666; font-size: 14px; text-align: right;">x${item.quantity}</td>
+                      <td style="padding: 12px 0; color: #333; font-size: 14px; font-weight: 600; text-align: right;">$${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </table>
+              </div>
+
+              <!-- Order Summary -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Order Summary</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Subtotal:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${subtotal.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Delivery Fee:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${deliveryFee.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Taxes:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${((total - subtotal - deliveryFee).toFixed(2))}</td>
+                  </tr>
+                  <tr style="border-top: 2px solid #667eea;">
+                    <td style="padding: 12px 0; color: #333; font-size: 16px; font-weight: 600;">Total:</td>
+                    <td style="padding: 12px 0; color: #667eea; font-size: 20px; font-weight: 700; text-align: right;">$${total.toFixed(2)}</td>
+                  </tr>
+                </table>
+              </div>
+
+              ${additionalMessage ? `
+              <div style="background: #fff9e6; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #ffc107;">
+                <h3 style="color: #333; margin: 0 0 10px; font-size: 16px; font-weight: 600;">Additional Message</h3>
+                <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.6;">${additionalMessage}</p>
+              </div>
+              ` : ''}
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
+              <p style="color: #666; font-size: 13px; margin: 0;">If you have any questions, please contact us at <a href="mailto:support@redjfluer.com" style="color: #667eea; text-decoration: none;">support@redjfluer.com</a></p>
+              <p style="color: #999; font-size: 12px; margin: 10px 0 0;">© 2026 RedJFluer. All rights reserved.</p>
+            </div>
+          </div>
+        `
+      };
+
+      await transporter.sendMail(customerMailOptions);
+      console.log('Order confirmation email sent to customer:', customerEmail);
+    } catch (emailError) {
+      console.error('Error sending customer email:', emailError);
+      // Don't fail the order if email fails
+    }
+
+    // Send order notification email to owner
+    try {
+      const ownerMailOptions = {
+        from: process.env.EMAIL_FROM || 'RedJFluer <noreply@redjfluer.com>',
+        to: process.env.OWNER_EMAIL || process.env.EMAIL_USER,
+        subject: `New Order Received - ${order._id}`,
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: 1px;">RedJFluer</h1>
+            
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <h2 style="color: #d32f2f; font-size: 24px; margin: 0 0 10px; font-weight: 600;">New Order Received</h2>
+              <p style="color: #666; font-size: 15px; line-height: 1.6; margin: 0 0 30px;">You have received a new order. Please review the details below.</p>
+
+              <!-- Order Details -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #d32f2f;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Order Details</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px; width: 140px;">Order ID:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${order._id}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Customer:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${customerName}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Email:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${customerEmail}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Phone:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${customerPhone || 'Not provided'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Delivery Date:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${deliveryDate}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px; vertical-align: top;">Delivery Address:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; font-weight: 500;">${deliveryAddress}, ${city}, ${state} ${zipCode}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Status:</td>
+                    <td style="padding: 8px 0; color: #d32f2f; font-size: 14px; font-weight: 600;">Pending</td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Items Ordered -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Items Ordered</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  ${items.map(item => `
+                    <tr style="border-bottom: 1px solid #e0e0e0;">
+                      <td style="padding: 12px 0; color: #333; font-size: 14px; font-weight: 500;">${item.name} (${item.size})</td>
+                      <td style="padding: 12px 0; color: #666; font-size: 14px; text-align: right;">x${item.quantity}</td>
+                      <td style="padding: 12px 0; color: #333; font-size: 14px; font-weight: 600; text-align: right;">$${(item.price * item.quantity).toFixed(2)}</td>
+                    </tr>
+                  `).join('')}
+                </table>
+              </div>
+
+              <!-- Order Summary -->
+              <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin: 0 0 15px; font-size: 18px; font-weight: 600;">Order Summary</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Subtotal:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${subtotal.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Delivery Fee:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${deliveryFee.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-size: 14px;">Taxes:</td>
+                    <td style="padding: 8px 0; color: #333; font-size: 14px; text-align: right;">$${((total - subtotal - deliveryFee).toFixed(2))}</td>
+                  </tr>
+                  <tr style="border-top: 2px solid #d32f2f;">
+                    <td style="padding: 12px 0; color: #333; font-size: 16px; font-weight: 600;">Total:</td>
+                    <td style="padding: 12px 0; color: #d32f2f; font-size: 20px; font-weight: 700; text-align: right;">$${total.toFixed(2)}</td>
+                  </tr>
+                </table>
+              </div>
+
+              ${additionalMessage ? `
+              <div style="background: #fff9e6; padding: 20px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #ffc107;">
+                <h3 style="color: #333; margin: 0 0 10px; font-size: 16px; font-weight: 600;">Additional Message</h3>
+                <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.6;">${additionalMessage}</p>
+              </div>
+              ` : ''}
+            </div>
+
+            <!-- Footer -->
+            <div style="background: #f8f9fa; padding: 25px 30px; text-align: center; border-top: 1px solid #e0e0e0;">
+              <p style="color: #666; font-size: 13px; margin: 0;">Please log in to your admin dashboard to process this order.</p>
+              <p style="color: #999; font-size: 12px; margin: 10px 0 0;">© 2026 RedJFluer. All rights reserved.</p>
+            </div>
+          </div>
+        `
+      };
+
+      await transporter.sendMail(ownerMailOptions);
+      console.log('Order notification email sent to owner:', process.env.OWNER_EMAIL || process.env.EMAIL_USER);
+    } catch (ownerEmailError) {
+      console.error('Error sending owner email:', ownerEmailError);
+      // Don't fail the order if email fails
+    }
+
+    res.status(201).json({ success: true, orderId: order._id });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ error: 'Failed to create order' });
+  }
+});
+
+// Get order by ID
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    res.json(order);
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    res.status(500).json({ error: 'Failed to fetch order' });
   }
 });
 

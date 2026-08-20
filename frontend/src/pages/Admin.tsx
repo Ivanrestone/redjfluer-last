@@ -500,41 +500,41 @@ function Admin() {
                     <table className="w-full text-left">
                       <thead className="bg-surface-container-high border-b border-outline-variant/30">
                         <tr>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Order ID</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Customer</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Product</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Amount</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Date</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Status</th>
-                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Actions</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Order ID</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Customer</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Product</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Amount</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Date</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Status</th>
+                          <th className="px-3 py-2 font-label-caps text-[8px] text-on-surface uppercase tracking-wider">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-outline-variant/20">
                         {recentOrders.map((order, index) => (
                           <tr key={index} className="hover:bg-surface-container-lowest transition-colors group">
-                            <td className="px-8 py-6 font-body-md text-primary font-semibold">{order._id}</td>
-                            <td className="px-8 py-6">
-                              <p className="font-body-md">{order.customerName}</p>
-                              <p className="text-xs text-on-surface-variant">{order.customerEmail}</p>
+                            <td className="px-3 py-2 text-[10px] text-primary font-medium">{order._id}</td>
+                            <td className="px-3 py-2">
+                              <p className="text-[10px]">{order.customerName}</p>
+                              <p className="text-[8px] text-on-surface-variant">{order.customerEmail}</p>
                             </td>
-                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{order.items?.[0]?.name || 'N/A'}</td>
-                            <td className="px-8 py-6 font-body-md font-semibold">${order.total?.toFixed(2) || '0.00'}</td>
-                            <td className="px-8 py-6 font-body-md text-on-surface-variant">{new Date(order.createdAt).toLocaleDateString()}</td>
-                            <td className="px-8 py-6">
+                            <td className="px-3 py-2 text-[10px] text-on-surface">{order.items?.[0]?.name || 'N/A'}</td>
+                            <td className="px-3 py-2 text-[10px] font-medium">${order.total?.toFixed(2) || '0.00'}</td>
+                            <td className="px-3 py-2 text-[10px] text-on-surface">{new Date(order.createdAt).toLocaleDateString()}</td>
+                            <td className="px-3 py-2">
                               <select
                                 value={order.status}
                                 onChange={(e) => {
                                   const newOrders = [...recentOrders]
                                   newOrders[index].status = e.target.value
                                 }}
-                                className={`px-3 py-1 text-[9px] font-label-caps tracking-widest uppercase border-none focus:ring-0 cursor-pointer ${
+                                className={`px-1.5 py-0.5 text-[7px] font-label-caps tracking-wider uppercase border-none focus:ring-0 cursor-pointer ${
                                   order.status === 'Delivered'
                                     ? 'bg-primary text-on-primary'
                                     : order.status === 'Shipped'
                                       ? 'bg-secondary-container text-on-secondary-container'
                                       : order.status === 'Processing'
-                                        ? 'bg-surface-container-highest text-on-surface-variant border border-outline-variant/30'
-                                        : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/30'
+                                        ? 'bg-surface-container-highest text-on-surface border border-outline-variant/30'
+                                        : 'bg-surface-container-low text-on-surface border border-outline-variant/30'
                                 }`}
                               >
                                 <option value="Pending">Pending</option>
@@ -543,10 +543,10 @@ function Admin() {
                                 <option value="Delivered">Delivered</option>
                               </select>
                             </td>
-                            <td className="px-8 py-6">
+                            <td className="px-3 py-2">
                               <button
                                 onClick={() => setSelectedOrder(order)}
-                                className="material-symbols-outlined text-outline hover:text-primary transition-colors"
+                                className="material-symbols-outlined text-on-surface hover:text-primary transition-colors text-sm"
                               >
                                 visibility
                               </button>
@@ -561,64 +561,128 @@ function Admin() {
                 {/* Order Detail Modal */}
                 {selectedOrder && (
                   <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-surface max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                      <div className="p-8 border-b border-outline-variant/30 flex justify-between items-center">
-                        <h3 className="font-headline-md text-headline-md text-primary">Order Details</h3>
+                    <div className="bg-surface max-w-md w-full">
+                      <div className="p-3 border-b border-outline-variant/30 flex justify-between items-center">
+                        <h3 className="text-xs font-semibold text-primary">Order Details</h3>
                         <button 
                           onClick={() => setSelectedOrder(null)}
-                          className="material-symbols-outlined text-outline hover:text-primary"
+                          className="material-symbols-outlined text-on-surface hover:text-primary text-lg"
                         >
                           close
                         </button>
                       </div>
-                      <div className="p-8 space-y-6">
-                        <div className="grid grid-cols-2 gap-6">
+                      <div className="p-3 space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Order ID</p>
-                            <p className="font-body-md text-primary font-semibold">{selectedOrder.id}</p>
+                            <p className="text-[8px] text-on-surface uppercase tracking-wider mb-0.5">Order ID</p>
+                            <p className="text-xs text-primary font-medium">{selectedOrder._id}</p>
                           </div>
                           <div>
-                            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Date</p>
-                            <p className="font-body-md">{selectedOrder.date}</p>
-                          </div>
-                          <div>
-                            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Customer</p>
-                            <p className="font-body-md">{selectedOrder.customer}</p>
-                            <p className="text-sm text-on-surface-variant">{selectedOrder.email}</p>
-                          </div>
-                          <div>
-                            <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Status</p>
-                            <span className={`px-3 py-1 text-[9px] font-label-caps tracking-widest uppercase ${
-                              selectedOrder.status === 'Delivered'
-                                ? 'bg-primary text-on-primary'
-                                : selectedOrder.status === 'Shipped'
-                                  ? 'bg-secondary-container text-on-secondary-container'
-                                  : selectedOrder.status === 'Processing'
-                                    ? 'bg-surface-container-highest text-on-surface-variant border border-outline-variant/30'
-                                    : 'bg-surface-container-low text-on-surface-variant border border-outline-variant/30'
-                            }`}>
-                              {selectedOrder.status}
-                            </span>
+                            <p className="text-[8px] text-on-surface uppercase tracking-wider mb-0.5">Order Date</p>
+                            <p className="text-xs">{new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
                           </div>
                         </div>
-                        <div>
-                          <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-2">Delivery Address</p>
-                          <p className="font-body-md">{selectedOrder.address}</p>
-                        </div>
-                        <div className="border-t border-outline-variant/30 pt-6">
-                          <p className="font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest mb-4">Order Items</p>
-                          <div className="flex items-center gap-4 p-4 bg-surface-container-low">
-                            <div className="w-16 h-20 bg-surface-container-high"></div>
-                            <div className="flex-1">
-                              <p className="font-body-md font-semibold">{selectedOrder.product}</p>
-                              <p className="text-sm text-on-surface-variant">Quantity: 1</p>
+
+                        {/* Customer Information */}
+                        <div className="bg-surface-container-low p-3 rounded-lg">
+                          <p className="text-[8px] text-on-surface uppercase tracking-wider mb-1.5">1. Customer Information</p>
+                          <div className="space-y-1.5">
+                            <div>
+                              <p className="text-[10px] text-on-surface-variant mb-0.5">Email</p>
+                              <p className="text-xs">{selectedOrder.customerEmail}</p>
                             </div>
-                            <p className="font-body-md font-semibold">{selectedOrder.amount}</p>
+                            {selectedOrder.customerPhone && (
+                              <div>
+                                <p className="text-[10px] text-on-surface-variant mb-0.5">Phone</p>
+                                <p className="text-xs">{selectedOrder.customerPhone}</p>
+                              </div>
+                            )}
                           </div>
                         </div>
-                        <div className="flex justify-between items-center border-t border-outline-variant/30 pt-6">
-                          <p className="font-headline-sm text-headline-sm">Total</p>
-                          <p className="font-headline-sm text-headline-sm text-primary">{selectedOrder.amount}</p>
+
+                        {/* Delivery Details */}
+                        <div className="bg-surface-container-low p-3 rounded-lg">
+                          <p className="text-[8px] text-on-surface uppercase tracking-wider mb-1.5">2. Delivery Details</p>
+                          <div className="space-y-1.5">
+                            <div>
+                              <p className="text-[10px] text-on-surface-variant mb-0.5">Recipient</p>
+                              <p className="text-xs">{selectedOrder.customerName}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-on-surface-variant mb-0.5">Delivery Date</p>
+                              <p className="text-xs">{selectedOrder.deliveryDate}</p>
+                            </div>
+                            <div>
+                              <p className="text-[10px] text-on-surface-variant mb-0.5">Delivery Address</p>
+                              <p className="text-xs text-on-surface-variant">{selectedOrder.deliveryAddress}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Order Status */}
+                        <div className="flex justify-between items-center">
+                          <p className="text-[8px] text-on-surface uppercase tracking-wider">Status</p>
+                          <span className={`px-1.5 py-0.5 text-[10px] font-medium uppercase ${
+                            selectedOrder.status === 'Delivered'
+                              ? 'bg-primary text-on-primary'
+                              : selectedOrder.status === 'Shipped'
+                                ? 'bg-secondary-container text-on-secondary-container'
+                                : selectedOrder.status === 'Processing'
+                                  ? 'bg-surface-container-highest text-on-surface border border-outline-variant/30'
+                                  : 'bg-surface-container-low text-on-surface border border-outline-variant/30'
+                          }`}>
+                            {selectedOrder.status}
+                          </span>
+                        </div>
+
+                        {/* Order Items */}
+                        <div className="border-t border-outline-variant/30 pt-3">
+                          <p className="text-[8px] text-on-surface uppercase tracking-wider mb-1.5">Order Items</p>
+                          <div className="space-y-2">
+                            {selectedOrder.items?.map((item: any, index: number) => (
+                              <div key={index} className="flex items-center gap-2 p-2 bg-surface-container-low rounded-lg">
+                                <div className="w-10 h-10 bg-surface-container-high overflow-hidden flex-shrink-0 rounded">
+                                  <img
+                                    src={item.image || '/Bouquets/5f470670cf477c2f0e6aa9e5eb09beb3.jpg'}
+                                    alt={item.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-medium truncate">{item.name}</p>
+                                  <p className="text-[10px] text-on-surface-variant">{item.size} x{item.quantity}</p>
+                                </div>
+                                <p className="text-xs font-medium text-primary">${(item.price * item.quantity).toFixed(2)}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Additional Message */}
+                        {selectedOrder.additionalMessage && (
+                          <div className="bg-surface-container-low p-2 rounded-lg">
+                            <p className="text-[8px] text-on-surface uppercase tracking-wider mb-0.5">Additional Message</p>
+                            <p className="text-xs text-on-surface-variant">{selectedOrder.additionalMessage}</p>
+                          </div>
+                        )}
+
+                        {/* Order Summary */}
+                        <div className="border-t border-outline-variant/30 pt-3">
+                          <p className="text-[8px] text-on-surface uppercase tracking-wider mb-1.5">Order Summary</p>
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between">
+                              <span className="text-[10px] text-on-surface-variant">Subtotal</span>
+                              <span className="text-xs">${selectedOrder.subtotal?.toFixed(2) || '0.00'}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[10px] text-on-surface-variant">Delivery Fee</span>
+                              <span className="text-xs">${selectedOrder.deliveryFee?.toFixed(2) || '0.00'}</span>
+                            </div>
+                            <div className="flex justify-between items-center pt-1.5 border-t border-outline-variant/30">
+                              <span className="text-xs font-medium">Total</span>
+                              <span className="text-sm font-semibold text-primary">${selectedOrder.total?.toFixed(2) || '0.00'}</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
