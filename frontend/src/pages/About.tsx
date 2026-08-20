@@ -144,75 +144,59 @@ function About() {
         </div>
       </section>
 
-      {/* Footer with Product Images */}
-      <footer className="w-full bg-surface-container border-t border-outline-variant/20 mt-section-gap">
-        <div className="px-6 md:px-margin-desktop py-section-gap max-w-container-max mx-auto">
+      {/* Footer */}
+      <footer className="bg-surface-container dark:bg-primary-container border-t border-outline-variant/20">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-6 md:px-margin-desktop py-section-gap max-w-container-max mx-auto">
           {/* Brand Info */}
-          <div className="mb-12">
-            <h2 className="font-headline-sm text-headline-sm text-primary mb-4">REDJFLUER</h2>
-            <p className="font-body-md text-on-surface-variant leading-relaxed max-w-md">
+          <div className="space-y-6">
+            <h2 className="font-headline-sm text-headline-sm text-primary dark:text-on-primary">REDJFLUER</h2>
+            <p className="font-body-md text-on-surface-variant leading-relaxed">
               Elevating the language of flowers through artisanal curation and mindful design.
             </p>
-          </div>
-
-          {/* Product Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-            <div className="group cursor-pointer">
-              <div className="aspect-square overflow-hidden mb-4 bg-surface">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  alt="Luxury bouquet" 
-                  src="/Bouquets/91a81b1aba67cf0ba032f31b46976846.jpg"
-                />
-              </div>
-              <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Bouquets</h3>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">EXPLORE</p>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="aspect-square overflow-hidden mb-4 bg-surface">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  alt="Flower box" 
-                  src="/BoxWithFlowers/27612b8d2ee543549d3be8fb7258c0f6.jpg"
-                />
-              </div>
-              <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Flower Boxes</h3>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">EXPLORE</p>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="aspect-square overflow-hidden mb-4 bg-surface">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  alt="Plants in vases" 
-                  src="/VaseWithPlant/7663e4943b0e5d2b02627c489d64f9af.jpg"
-                />
-              </div>
-              <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Plants in Vases</h3>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">EXPLORE</p>
-            </div>
-            <div className="group cursor-pointer">
-              <div className="aspect-square overflow-hidden mb-4 bg-surface">
-                <img 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  alt="Roses" 
-                  src="/Bouquets/674d716d284ebc4a2e34edd597456f16.jpg"
-                />
-              </div>
-              <h3 className="font-headline-sm text-headline-sm text-primary mb-1">Roses</h3>
-              <p className="font-label-caps text-label-caps text-on-surface-variant">EXPLORE</p>
+            <div className="flex gap-4">
+              <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="#">
+                <span className="material-symbols-outlined">public</span>
+              </a>
+              <a className="w-10 h-10 border border-outline-variant flex items-center justify-center hover:border-primary transition-colors" href="#">
+                <span className="material-symbols-outlined">alternate_email</span>
+              </a>
             </div>
           </div>
-
-          {/* Bottom Links */}
-          <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-outline-variant/10 gap-4">
-            <p className="font-label-caps text-[10px] text-on-surface-variant">© 2026 RedJFluer</p>
-            <div className="flex gap-8">
-              <a className="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="/shop">Shop All</a>
-              <a className="font-body-md text-primary font-semibold hover:text-secondary transition-colors duration-300" href="/about">Our Story</a>
-              <a className="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Shipping &amp; Returns</a>
-              <a className="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Privacy Policy</a>
-              <a className="font-body-md text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Contact</a>
-            </div>
+          {/* Links Column 1 */}
+          <div>
+            <h4 className="font-label-caps text-label-caps mb-8 text-primary">COLLECTIONS</h4>
+            <ul className="space-y-4">
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="/shop">Shop All</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Signature Series</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">The Wedding Edit</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Limited Releases</a></li>
+            </ul>
+          </div>
+          {/* Links Column 2 */}
+          <div>
+            <h4 className="font-label-caps text-label-caps mb-8 text-primary">ABOUT</h4>
+            <ul className="space-y-4">
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="/admin">Admin Dashboard</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a></li>
+            </ul>
+          </div>
+          {/* Links Column 3 */}
+          <div>
+            <h4 className="font-label-caps text-label-caps mb-8 text-primary">SUPPORT</h4>
+            <ul className="space-y-4">
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Shipping &amp; Returns</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+              <li><a className="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="px-6 md:px-margin-desktop py-8 border-t border-outline-variant/10 max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="font-label-caps text-[10px] text-on-surface-variant">© 2026 RedJFluer</p>
+          <div className="flex gap-8">
+            <span className="font-label-caps text-[10px] text-on-surface-variant">VISA</span>
+            <span className="font-label-caps text-[10px] text-on-surface-variant">MASTERCARD</span>
+            <span className="font-label-caps text-[10px] text-on-surface-variant">AMEX</span>
+            <span className="font-label-caps text-[10px] text-on-surface-variant">APPLE PAY</span>
           </div>
         </div>
       </footer>
