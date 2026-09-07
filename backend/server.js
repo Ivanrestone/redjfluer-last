@@ -348,7 +348,34 @@ app.get('/api/orders/recent', verifyAdminToken, async (req, res) => {
 // Get all customers
 app.get('/api/customers', verifyAdminToken, async (req, res) => {
   try {
-    const customers = await Account.find().sort({ createdAt: -1 });
+    const orders = await Order.find().sort({ createdAt: -1 });
+    
+    // Extract unique customers from orders
+    const customerMap = new Map();
+    
+    orders.forEach(order => {
+      const email = order.customerEmail;
+      if (!customerMap.has(email)) {
+        customerMap.set(email, {
+          name: order.customerName,
+          email: order.customerEmail,
+          phone: order.customerPhone || 'Not provided',
+          address: order.deliveryAddress,
+          joinedDate: order.createdAt,
+          totalOrders: 1,
+          totalSpent: order.total
+        });
+      } else {
+        const customer = customerMap.get(email);
+        customer.totalOrders += 1;
+        customer.totalSpent += order.total;
+      }
+    });
+    
+    const customers = Array.from(customerMap.values()).sort((a, b) => 
+      new Date(b.joinedDate).getTime() - new Date(a.joinedDate).getTime()
+    );
+    
     res.json(customers);
   } catch (error) {
     console.error('Error fetching customers:', error);

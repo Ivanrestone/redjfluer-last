@@ -9,6 +9,8 @@ function Shop() {
   const [selectedCategory, setSelectedCategory] = useState('All Collections')
   const [searchQuery] = useState('')
   const [sortBy, setSortBy] = useState('Newest')
+  const [selectedColor, setSelectedColor] = useState<string | null>(null)
+  const [showAllColors, setShowAllColors] = useState(false)
   const { addToCart } = useCart()
 
   useEffect(() => {
@@ -119,11 +121,57 @@ function Shop() {
     'Plants in Vases': 'VaseWithPlant'
   }
 
+  // Color mapping for products
+  const colorMap: { [key: string]: string[] } = {
+    '#FFFFFF': ['Elegant White', 'Pastel Dreams', 'Garden Party', 'Sweet Peony', 'Daisy Delight', 'Garden Fresh', 'Spring Bloom'],
+    '#FFD7D7': ['Lavender Bliss', 'Pastel Harmony', 'Blush Beauty', 'Pink Paradise', 'Peace Lily'],
+    '#E30B5C': ['Romantic Red', 'Rose Elegance', 'Eternal Love', 'Velvet Rose Box', 'Rose Garden'],
+    '#FFB347': ['Sunset Glow', 'Golden Hour', 'Summer Solstice', 'Garden Party'],
+    '#5D3FD3': ['Midnight Velvet', 'Monstera Elegance', 'Dracaena Grace', 'Orchid Elegance'],
+    '#90EE90': ['Snake Plant', 'Pothos Beauty', 'Bamboo Zen', 'Succulent Garden'],
+    '#FFD700': ['Luxury Gold', 'Golden Hour', 'Classic Charm'],
+    '#87CEEB': ['Blue Sky', 'Ocean Breeze', 'Cool Waters'],
+    '#FF69B4': ['Hot Pink', 'Magenta Dreams', 'Fuchsia Bloom'],
+    '#98FB98': ['Mint Green', 'Fresh Garden', 'Spring Meadow'],
+    '#DDA0DD': ['Plum Perfect', 'Lavender Fields', 'Purple Haze'],
+    '#F0E68C': ['Khaki Dreams', 'Sandy Beach', 'Warm Sand'],
+    '#E6E6FA': ['Lavender Mist', 'Soft Purple', 'Dreamy Lilac'],
+    '#FFE4E1': ['Misty Rose', 'Soft Coral', 'Pale Pink'],
+    '#B0E0E6': ['Powder Blue', 'Ice Blue', 'Cool Mint']
+  }
+
+  const allColors = [
+    { code: '#FFFFFF', name: 'White' },
+    { code: '#FFD7D7', name: 'Blush' },
+    { code: '#E30B5C', name: 'Crimson' },
+    { code: '#FFB347', name: 'Peach' },
+    { code: '#5D3FD3', name: 'Violet' },
+    { code: '#90EE90', name: 'Green' },
+    { code: '#FFD700', name: 'Gold' },
+    { code: '#87CEEB', name: 'Blue' },
+    { code: '#FF69B4', name: 'Hot Pink' },
+    { code: '#98FB98', name: 'Mint' },
+    { code: '#DDA0DD', name: 'Plum' },
+    { code: '#F0E68C', name: 'Khaki' },
+    { code: '#E6E6FA', name: 'Lavender' },
+    { code: '#FFE4E1', name: 'Misty Rose' },
+    { code: '#B0E0E6', name: 'Powder Blue' }
+  ]
+
+  const displayColors = showAllColors ? allColors : allColors.slice(0, 5)
+
   const filteredProducts = selectedCategory === 'All Collections'
-    ? products.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? products.filter(p => {
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const matchesColor = !selectedColor || colorMap[selectedColor]?.includes(p.name)
+        return matchesSearch && matchesColor
+      })
     : products.filter(p => {
         const actualCategory = categoryMap[selectedCategory] || selectedCategory
-        return p.category === actualCategory && p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const matchesCategory = p.category === actualCategory
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const matchesColor = !selectedColor || colorMap[selectedColor]?.includes(p.name)
+        return matchesCategory && matchesSearch && matchesColor
       })
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -182,12 +230,30 @@ function Shop() {
               <section>
                 <h3 className="font-label-caps text-label-caps text-primary mb-6">Color Palette</h3>
                 <div className="grid grid-cols-5 gap-3">
-                  <button className="w-6 h-6 rounded-full bg-[#FFFFFF] border border-outline/20 hover:scale-110 transition-transform" title="White"></button>
-                  <button className="w-6 h-6 rounded-full bg-[#FFD7D7] hover:scale-110 transition-transform" title="Blush"></button>
-                  <button className="w-6 h-6 rounded-full bg-[#E30B5C] hover:scale-110 transition-transform" title="Crimson"></button>
-                  <button className="w-6 h-6 rounded-full bg-[#FFB347] hover:scale-110 transition-transform" title="Peach"></button>
-                  <button className="w-6 h-6 rounded-full bg-[#5D3FD3] hover:scale-110 transition-transform" title="Violet"></button>
+                  {displayColors.map((color) => (
+                    <button
+                      key={color.code}
+                      onClick={() => setSelectedColor(selectedColor === color.code ? null : color.code)}
+                      className={`w-6 h-6 rounded-full hover:scale-110 transition-transform ${selectedColor === color.code ? 'ring-2 ring-primary ring-offset-2' : ''}`}
+                      style={{ backgroundColor: color.code, border: color.code === '#FFFFFF' ? '1px solid #e5e4e7' : 'none' }}
+                      title={color.name}
+                    ></button>
+                  ))}
                 </div>
+                <button
+                  onClick={() => setShowAllColors(!showAllColors)}
+                  className="mt-3 text-xs text-on-surface-variant hover:text-primary transition-colors"
+                >
+                  {showAllColors ? 'Show Less' : 'See More Colors'}
+                </button>
+                {selectedColor && (
+                  <button
+                    onClick={() => setSelectedColor(null)}
+                    className="mt-2 text-xs text-on-surface-variant hover:text-primary transition-colors block"
+                  >
+                    Clear Color Filter
+                  </button>
+                )}
               </section>
 
               {/* Promotional Card */}

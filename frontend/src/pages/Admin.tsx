@@ -955,6 +955,8 @@ function Admin() {
                           <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Email</th>
                           <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Phone</th>
                           <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Address</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Orders</th>
+                          <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Total Spent</th>
                           <th className="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-widest">Joined Date</th>
                         </tr>
                       </thead>
@@ -964,14 +966,16 @@ function Admin() {
                             <tr key={index} className="hover:bg-surface-container-lowest transition-colors">
                               <td className="px-8 py-6 font-body-md font-semibold">{customer.name}</td>
                               <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.email}</td>
-                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.phone || 'N/A'}</td>
-                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.address || 'N/A'}</td>
-                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{new Date(customer.createdAt).toLocaleDateString()}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.phone}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant max-w-xs truncate">{customer.address}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{customer.totalOrders}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant font-semibold">${customer.totalSpent.toFixed(2)}</td>
+                              <td className="px-8 py-6 font-body-md text-on-surface-variant">{new Date(customer.joinedDate).toLocaleDateString()}</td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan={5} className="px-8 py-12 text-center text-on-surface-variant">No customers yet</td>
+                            <td colSpan={7} className="px-8 py-12 text-center text-on-surface-variant">No customers yet</td>
                           </tr>
                         )}
                       </tbody>
